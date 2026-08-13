@@ -4,7 +4,7 @@ import { images } from "@/lib/content";
 
 export function VideoTourSection() {
   return (
-    <section className="relative flex min-h-[420px] items-center justify-center overflow-hidden py-24">
+    <section className="relative flex min-h-105 items-center justify-center overflow-hidden py-24">
       <Image
         src={images.video}
         alt="Resort outdoor dining tour"

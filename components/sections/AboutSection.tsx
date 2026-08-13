@@ -8,17 +8,17 @@ export function AboutSection() {
     <section id="about" className="bg-white py-20 md:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
         <div className="relative mx-auto w-full max-w-lg pb-14">
-          <div className="relative h-[320px] overflow-hidden sm:h-[380px] lg:h-[420px]">
+          <div className="relative h-80 overflow-hidden sm:h-95 lg:h-105">
             <Image
-              src={images.aboutMain}
+              src={images.aboutMain}  
               alt="Resort reception entrance"
               fill
               className="object-cover object-[center_35%]"
               sizes="(max-width: 1024px) 100vw, 40vw"
             />
           </div>
-          <div className="absolute bottom-0 right-0 w-[52%] overflow-hidden border-[8px] border-white shadow-xl sm:w-[48%]">
-            <div className="relative aspect-[16/11]">
+          <div className="absolute bottom-0 right-0 w-[52%] overflow-hidden border-8 border-white shadow-xl sm:w-[48%]">
+            <div className="relative aspect-16/11">
               <Image
                 src={images.aboutSide}
                 alt="Comfortable guest room"

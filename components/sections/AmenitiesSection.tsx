@@ -7,11 +7,11 @@ export function AmenitiesSection() {
   return (
     <section id="amenities" className="relative overflow-hidden bg-cream py-20 md:py-28">
       <CoffeeMillIcon
-        className="pointer-events-none absolute -left-10 top-8 h-[320px] w-[260px] -rotate-[18deg] text-[#d8d2c8] opacity-50 md:left-0"
+        className="pointer-events-none absolute -left-10 top-8 h-80 w-65 rotate-[-18deg] text-[#d8d2c8] opacity-50 md:left-0"
         aria-hidden="true"
       />
       <CoffeeMillIcon
-        className="pointer-events-none absolute -right-8 bottom-4 h-[280px] w-[230px] rotate-[16deg] text-[#d8d2c8] opacity-45"
+        className="pointer-events-none absolute -right-8 bottom-4 h-70 w-57.5 rotate-16 text-[#d8d2c8] opacity-45"
         aria-hidden="true"
       />
 

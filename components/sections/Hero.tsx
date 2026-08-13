@@ -60,7 +60,7 @@ export function Hero() {
         className="object-cover"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/45 to-black/25" />
+      <div className="absolute inset-0 bg-linear-to-r from-black/65 via-black/45 to-black/25" />
 
       <div className="relative mx-auto flex min-h-[92vh] max-w-7xl flex-col justify-center gap-10 px-4 pb-24 pt-40 md:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
         <div className="max-w-xl text-white">
@@ -74,7 +74,7 @@ export function Hero() {
           <Button variant="outlineLight">Discover</Button>
         </div>
 
-        <div className="w-full max-w-[420px] bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.25)] md:p-9">
+        <div className="w-full max-w-105 bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.25)] md:p-9">
           <h2 className="mb-7 text-left text-[1.75rem] font-bold text-black">Book A Room</h2>
           <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">

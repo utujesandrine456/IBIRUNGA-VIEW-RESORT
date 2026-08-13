@@ -52,7 +52,7 @@ export function BookingFormSection() {
             <Button className="mt-2 w-full">Book Now</Button>
           </form>
         </div>
-        <div className="relative min-h-[320px]">
+        <div className="relative min-h-80">
           <Image
             src={images.booking}
             alt="Resort lounge interior"

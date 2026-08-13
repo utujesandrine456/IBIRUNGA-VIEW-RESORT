@@ -6,11 +6,11 @@ export function ExtraServicesSection() {
   return (
     <section id="extra" className="relative overflow-hidden bg-white py-20 md:py-28">
       <CoffeeMillIcon
-        className="pointer-events-none absolute -left-6 top-10 h-[300px] w-[250px] -rotate-[15deg] text-[#ddd6cc] opacity-45 md:left-4"
+        className="pointer-events-none absolute -left-6 top-10 h-75 w-62.5 rotate-[-15deg] text-[#ddd6cc] opacity-45 md:left-4"
         aria-hidden="true"
       />
       <CoffeeMillIcon
-        className="pointer-events-none absolute -right-10 bottom-6 h-[260px] w-[220px] rotate-[18deg] text-[#ddd6cc] opacity-40"
+        className="pointer-events-none absolute -right-10 bottom-6 h-65 w-55 rotate-18 text-[#ddd6cc] opacity-40"
         aria-hidden="true"
       />
 

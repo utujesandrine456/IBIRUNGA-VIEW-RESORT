@@ -70,7 +70,7 @@ export function RoomCard({
 }) {
   return (
     <article className="group overflow-hidden bg-white shadow-[0_8px_30px_rgba(60,40,20,0.06)]">
-      <div className="relative aspect-[4/3] overflow-hidden">
+      <div className="relative aspect-4/3 overflow-hidden">
         <Image
           src={src}
           alt={title}
@@ -159,7 +159,7 @@ export function BlogCard({
 }) {
   return (
     <article className="group overflow-hidden bg-white shadow-[0_8px_30px_rgba(60,40,20,0.05)]">
-      <div className="relative aspect-[16/11] overflow-hidden">
+      <div className="relative aspect-16/11 overflow-hidden">
         <Image
           src={src}
           alt={title}
