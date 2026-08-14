@@ -11,7 +11,7 @@ import {
   UsersIcon,
 } from "@/components/ui/Icons";
 import { ease, fadeInLeft, fadeInRight } from "@/lib/motion";
-import { images } from "@/lib/content";
+import { useCmsContent } from "@/components/providers/ContentProvider";
 
 function Field({
   label,
@@ -52,6 +52,7 @@ function Field({
 }
 
 export function Hero() {
+  const { hero } = useCmsContent();
   return (
     <section id="home" className="relative min-h-[92vh] overflow-hidden">
       <motion.div
@@ -61,7 +62,7 @@ export function Hero() {
         transition={{ duration: 1.4, ease }}
       >
         <Image
-          src={images.hero}
+          src={hero.backgroundImage ?? "/LUCIMAGES_20.JPG"}
           alt="Ibirunga View Resort terrace dining"
           fill
           priority
@@ -80,14 +81,14 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.3, ease }}
         >
           <h1 className="mb-5 text-4xl font-bold leading-[1.1] md:text-5xl lg:text-[3.4rem]">
-            Enjoy A Luxury Experience
+            {hero.headline ?? "Enjoy A Luxury Experience"}
           </h1>
           <p className="mb-8 max-w-md text-base leading-relaxed text-white/85 md:text-lg">
-            Rest above the hills of Musanze and wake to volcano views, warm hospitality,
-            and thoughtfully prepared spaces for every guest.
+            {hero.subtext ??
+              "Rest above the hills of Musanze and wake to volcano views, warm hospitality, and thoughtfully prepared spaces for every guest."}
           </p>
           <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            <Button variant="outlineLight">Discover</Button>
+            <Button variant="outlineLight">{hero.ctaLabel ?? "Discover"}</Button>
           </motion.div>
         </motion.div>
 

@@ -13,16 +13,7 @@ import { ImigongoFooterArt } from "@/components/ui/ImigongoPattern";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { fadeInUp, staggerContainer } from "@/lib/motion";
 import { handleSectionNav } from "@/lib/scroll";
-import { navLinks, site } from "@/lib/content";
-
-const services = [
-  "Restaurant & Bar",
-  "Spa & Massage",
-  "Coffee Shop",
-  "Airport Transfer",
-  "Garden Terrace",
-  "Meeting Room",
-];
+import { useCmsContent } from "@/components/providers/ContentProvider";
 
 const socialLinks = [
   { Icon: FacebookIcon, label: "Facebook" },
@@ -31,6 +22,7 @@ const socialLinks = [
 ] as const;
 
 export function Footer() {
+  const { site, navLinks, footerServices, footer } = useCmsContent();
   return (
     <footer className="relative mt-16 overflow-hidden bg-footer text-white md:mt-20">
       <ImigongoFooterArt className="pointer-events-none absolute inset-0" />
@@ -40,19 +32,19 @@ export function Footer() {
         stagger={staggerContainer}
       >
         <MotionItem variants={fadeInUp}>
-          <h3 className="mb-5 text-2xl font-bold">{site.name}</h3>
+          <h3 className="mb-5 text-2xl font-bold">{site?.name ?? "Ibirunga View Resort"}</h3>
           <ul className="space-y-3 text-sm text-white/70">
             <li className="flex items-start gap-3">
               <MapPinIcon className="mt-0.5 h-4 w-4 shrink-0 text-brown" />
-              {site.address}
+              {site?.address}
             </li>
             <li className="flex items-start gap-3">
               <PhoneIcon className="mt-0.5 h-4 w-4 shrink-0 text-brown" />
-              {site.phone}
+              {site?.phone}
             </li>
             <li className="flex items-start gap-3">
               <MailIcon className="mt-0.5 h-4 w-4 shrink-0 text-brown" />
-              {site.email}
+              {site?.email}
             </li>
           </ul>
         </MotionItem>
@@ -78,7 +70,7 @@ export function Footer() {
         <MotionItem variants={fadeInUp}>
           <h4 className="mb-5 text-lg font-bold">Services</h4>
           <ul className="space-y-2.5 text-sm text-white/70">
-            {services.map((service) => (
+            {footerServices.map((service) => (
               <li key={service}>{service}</li>
             ))}
           </ul>
@@ -87,7 +79,8 @@ export function Footer() {
         <MotionItem variants={fadeInUp}>
           <h4 className="mb-5 text-lg font-bold">Newsletter</h4>
           <p className="mb-4 text-sm leading-relaxed text-white/70">
-            Subscribe for stay offers, dining news, and seasonal updates from the resort.
+            {footer.newsletterDescription ??
+              "Subscribe for stay offers, dining news, and seasonal updates from the resort."}
           </p>
           <form
             className="flex overflow-hidden border border-white/15"
@@ -118,7 +111,7 @@ export function Footer() {
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-5 text-sm text-white/55 md:flex-row md:px-6">
-          <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {site?.name ?? "Ibirunga View Resort"}. All rights reserved.</p>
           <div className="flex items-center gap-5">
             {socialLinks.map(({ Icon, label }) => (
               <motion.a

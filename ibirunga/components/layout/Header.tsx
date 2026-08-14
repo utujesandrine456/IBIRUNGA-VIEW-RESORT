@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/Icons";
 import { ease } from "@/lib/motion";
 import { handleSectionNav } from "@/lib/scroll";
-import { images, navLinks, site } from "@/lib/content";
+import { useCmsContent } from "@/components/providers/ContentProvider";
 
 const accent = "#c19a6b";
 
@@ -23,9 +23,10 @@ const socialLinks = [
 ] as const;
 
 function LogoMark() {
+  const { site } = useCmsContent();
   return (
     <Image
-      src={images.logo}
+      src={site?.logoUrl ?? "/logo.png"}
       alt="Ibirunga View Resort logo"
       width={52}
       height={52}
@@ -36,27 +37,28 @@ function LogoMark() {
 }
 
 function TopBar() {
+  const { site } = useCmsContent();
   return (
     <div className="border-b-[3px] border-[#7c5539] bg-[#4b2c14]">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2.5 text-sm md:px-6">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-1" style={{ color: "#ffffff" }}>
           <motion.a
-            href={`tel:${site.phone.replace(/\s/g, "")}`}
+            href={`tel:${(site?.phone ?? "").replace(/\s/g, "")}`}
             className="inline-flex items-center gap-2"
             style={{ color: "#ffffff" }}
             whileHover={{ opacity: 0.85 }}
           >
             <PhoneIcon className="h-3.5 w-3.5" style={{ color: "#ffffff" }} />
-            {site.phone}
+            {site?.phone}
           </motion.a>
           <motion.a
-            href={`mailto:${site.email}`}
+            href={`mailto:${site?.email}`}
             className="hidden items-center gap-2 sm:inline-flex"
             style={{ color: "#ffffff" }}
             whileHover={{ opacity: 0.85 }}
           >
             <MailIcon className="h-3.5 w-3.5" style={{ color: "#ffffff" }} />
-            {site.email}
+            {site?.email}
           </motion.a>
         </div>
         <div className="flex items-center gap-3">
@@ -83,6 +85,7 @@ function TopBar() {
 }
 
 function Navbar({ scrolled }: { scrolled: boolean }) {
+  const { navLinks } = useCmsContent();
   const [open, setOpen] = useState(false);
 
   return (

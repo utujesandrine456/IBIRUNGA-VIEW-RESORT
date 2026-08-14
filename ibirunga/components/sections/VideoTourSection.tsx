@@ -4,9 +4,10 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { YoutubeIcon } from "@/components/ui/Icons";
 import { fadeInUp, scaleIn } from "@/lib/motion";
-import { images } from "@/lib/content";
+import { useCmsContent } from "@/components/providers/ContentProvider";
 
 export function VideoTourSection() {
+  const { video } = useCmsContent();
   return (
     <section className="relative flex min-h-105 items-center justify-center overflow-hidden py-24">
       <motion.div
@@ -17,7 +18,7 @@ export function VideoTourSection() {
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
       >
         <Image
-          src={images.video}
+          src={video.backgroundImage ?? "/LUCIMAGES_22.JPG"}
           alt="Resort outdoor dining tour"
           fill
           className="object-cover"
@@ -33,8 +34,10 @@ export function VideoTourSection() {
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        <motion.button
-          type="button"
+        <motion.a
+          href={video.youtubeUrl || "#"}
+          target={video.youtubeUrl ? "_blank" : undefined}
+          rel={video.youtubeUrl ? "noreferrer" : undefined}
           aria-label="Watch resort tour on YouTube"
           className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-xl"
           variants={scaleIn}
@@ -42,9 +45,9 @@ export function VideoTourSection() {
           whileTap={{ scale: 0.95 }}
         >
           <YoutubeIcon className="h-10 w-10" style={{ color: "#FF0000" }} />
-        </motion.button>
+        </motion.a>
         <h2 className="text-3xl font-bold md:text-4xl lg:text-5xl">
-          Take A Tour Of Luxury
+          {video.title ?? "Take A Tour Of Luxury"}
         </h2>
       </motion.div>
     </section>

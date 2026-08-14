@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import { RoomCard } from "@/components/ui/Cards";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ease } from "@/lib/motion";
-import { images } from "@/lib/content";
+import { useCmsContent } from "@/components/providers/ContentProvider";
 
 export function RoomsSection() {
-  const rooms = images.rooms;
+  const { rooms, roomsMeta } = useCmsContent();
   const [index, setIndex] = useState(0);
   const [perView, setPerView] = useState(1);
 
@@ -40,9 +40,12 @@ export function RoomsSection() {
     <section id="rooms" className="bg-white py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <SectionHeader
-          eyebrow="Accommodation"
-          title="Rooms & Suites"
-          description="Choose from thoughtfully prepared rooms designed for rest after a day exploring Musanze."
+          eyebrow={roomsMeta.eyebrow ?? "Accommodation"}
+          title={roomsMeta.title ?? "Rooms & Suites"}
+          description={
+            roomsMeta.description ??
+            "Choose from thoughtfully prepared rooms designed for rest after a day exploring Musanze."
+          }
         />
 
         <div className="relative overflow-hidden">
@@ -56,11 +59,16 @@ export function RoomsSection() {
           >
             {rooms.map((room) => (
               <div
-                key={room.title}
+                key={room.id ?? room.title}
                 className="px-3"
                 style={{ width: `${100 / rooms.length}%` }}
               >
-                <RoomCard {...room} />
+                <RoomCard
+                  src={room.src ?? room.image}
+                  title={room.title}
+                  price={room.price}
+                  category={room.category}
+                />
               </div>
             ))}
           </motion.div>

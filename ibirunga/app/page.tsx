@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/layout/Header";
 import { PageBackground } from "@/components/layout/PageBackground";
+import { ContentProvider } from "@/components/providers/ContentProvider";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { AmenitiesSection } from "@/components/sections/AmenitiesSection";
 import { BlogSection } from "@/components/sections/BlogSection";
@@ -11,10 +12,13 @@ import { RoomsSection } from "@/components/sections/RoomsSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { VideoTourSection } from "@/components/sections/VideoTourSection";
 import { Footer } from "@/components/layout/Footer";
+import { getContent } from "@/lib/getContent";
 
-export default function Home() {
+export default async function Home() {
+  const content = await getContent();
+
   return (
-    <>
+    <ContentProvider content={content}>
       <PageBackground />
       <div className="relative z-10">
         <SiteHeader />
@@ -30,6 +34,6 @@ export default function Home() {
         <BlogSection />
         <Footer />
       </div>
-    </>
+    </ContentProvider>
   );
 }

@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #2c2c2c;
+  --brown: #6b4423;
+  --brown-dark: #54341a;
+  --brown-deep: #3d2814;
+  --cream: #f7f5f0;
+  --cream-dark: #ebe7df;
+  --muted: #6b6b6b;
+  --border: #e5e1d8;
+  --footer: #1a1612;
+  --header-height: 130px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brown: var(--brown);
+  --color-brown-dark: var(--brown-dark);
+  --color-brown-deep: var(--brown-deep);
+  --color-cream: var(--cream);
+  --color-cream-dark: var(--cream-dark);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-footer: var(--footer);
+  --font-sans: var(--font-afacad);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
+  color-scheme: light;
+}
+
+section[id] {
+  scroll-margin-top: var(--header-height);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-afacad), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--brown) 25%, white);
+}

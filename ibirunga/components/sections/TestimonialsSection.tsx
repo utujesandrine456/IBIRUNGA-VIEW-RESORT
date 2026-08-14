@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ease, fadeInUp } from "@/lib/motion";
-import { testimonials } from "@/lib/content";
+import { useCmsContent } from "@/components/providers/ContentProvider";
 
 const offsets = [-1, 0, 1] as const;
 
@@ -43,6 +43,7 @@ const slideVariants = {
 };
 
 export function TestimonialsSection() {
+  const { testimonials, testimonialsMeta } = useCmsContent();
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(0);
   const total = testimonials.length;
@@ -73,10 +74,10 @@ export function TestimonialsSection() {
           transition={{ duration: 0.7, ease }}
         >
           <p className="mb-3 text-sm font-semibold tracking-[0.22em] text-[#c19a6b] uppercase">
-            Testimonial
+            {(testimonialsMeta.eyebrow as string) ?? "Testimonial"}
           </p>
           <h2 className="text-3xl font-bold text-white md:text-4xl">
-            What Our Clients Say
+            {(testimonialsMeta.title as string) ?? "What Our Clients Say"}
           </h2>
         </motion.div>
 
