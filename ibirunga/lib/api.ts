@@ -28,11 +28,21 @@ async function request<T>(
     if (token) headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  } catch {
+    throw new Error(
+      `Cannot reach the CMS API at ${API_URL}. Start the backend with "npm run start:dev" in ibirunga-backend.`,
+    );
+  }
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message ?? 'Request failed');
+    const message = Array.isArray(err.message)
+      ? err.message.join(', ')
+      : err.message ?? res.statusText;
+    throw new Error(message || 'Request failed');
   }
 
   if (res.status === 204) return undefined as T;
@@ -50,7 +60,17 @@ export const api = {
 
   admin: {
     dashboard: () =>
-      request<{ counts: Record<string, number> }>('/admin/dashboard', {}, true),
+      request<{
+        counts: Record<string, number>;
+        recentActivities: Array<{
+          id: string;
+          type: string;
+          title: string;
+          description: string;
+          status: string;
+          date: string;
+        }>;
+      }>('/admin/dashboard', {}, true),
     getSite: () => request<import('./cms-types').SiteSettings>('/admin/site', {}, true),
     updateSite: (data: import('./cms-types').SiteSettings) =>
       request('/admin/site', { method: 'PUT', body: JSON.stringify(data) }, true),

@@ -43,6 +43,14 @@ export class AdminContentController {
         bookings: bookingList.length,
         pendingBookings: bookingList.filter((b) => b.status === 'pending').length,
       },
+      recentActivities: bookingList.slice(0, 8).map((booking) => ({
+        id: booking.id,
+        type: 'booking',
+        title: booking.guestName,
+        description: `${booking.roomType ?? 'Room'} · ${booking.adults} adult(s)`,
+        status: booking.status,
+        date: booking.createdAt,
+      })),
     };
   }
 

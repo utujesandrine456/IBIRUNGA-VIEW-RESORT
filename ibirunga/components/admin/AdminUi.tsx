@@ -19,8 +19,8 @@ export function AdminPanel({
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-brown-deep">{title}</h1>
-        {description ? <p className="mt-2 text-muted">{description}</p> : null}
+        <h1 className="text-3xl font-bold text-[#2a1d14]">{title}</h1>
+        {description ? <p className="mt-2 text-sm text-[#6b6b6b]">{description}</p> : null}
       </div>
       {children}
     </div>
@@ -29,7 +29,7 @@ export function AdminPanel({
 
 export function AdminCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-white p-6 shadow-[0_8px_30px_rgba(60,40,20,0.06)]">
+    <div className="rounded-2xl border border-[#ebe7df] bg-white p-6 shadow-[0_8px_30px_rgba(60,40,20,0.05)]">
       {children}
     </div>
   );

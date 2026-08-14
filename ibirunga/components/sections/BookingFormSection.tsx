@@ -92,7 +92,7 @@ export function BookingFormSection() {
   }
 
   return (
-    <section id="contact" className="scroll-mt-[130px] bg-white py-20 md:py-28">
+    <section id="contact" className="scroll-mt-32.5 bg-white py-20 md:py-28">
       <motion.div
         className="mx-auto grid max-w-7xl overflow-hidden shadow-[0_18px_50px_rgba(60,40,20,0.08)] lg:grid-cols-2"
         initial={{ opacity: 0, y: 40 }}
