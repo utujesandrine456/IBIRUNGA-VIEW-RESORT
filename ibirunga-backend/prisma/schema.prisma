@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+}
+
+model SiteSetting {
+  id       String @id @default("default")
+  name     String
+  tagline  String
+  phone    String
+  phoneAlt String
+  email    String
+  address  String
+  logoUrl  String
+}
+
+model NavLink {
+  id        String  @id @default(uuid())
+  label     String
+  href      String
+  sortOrder Int     @default(0)
+  published Boolean @default(true)
+}
+
+model SectionContent {
+  id   String @id
+  data String
+}
+
+model Amenity {
+  id          String  @id @default(uuid())
+  title       String
+  description String
+  image       String
+  sortOrder   Int     @default(0)
+  published   Boolean @default(true)
+}
+
+model Room {
+  id          String  @id @default(uuid())
+  title       String
+  category    String
+  price       String
+  description String  @default("Spacious comfort with fresh linens, thoughtful details, and a calm atmosphere for your stay.")
+  image       String
+  sortOrder   Int     @default(0)
+  published   Boolean @default(true)
+}
+
+model ExtraService {
+  id        String  @id @default(uuid())
+  title     String
+  subtitle  String
+  price     String
+  features  String
+  sortOrder Int     @default(0)
+  published Boolean @default(true)
+}
+
+model Testimonial {
+  id        String  @id @default(uuid())
+  name      String
+  role      String
+  text      String
+  image     String
+  sortOrder Int     @default(0)
+  published Boolean @default(true)
+}
+
+model BlogPost {
+  id        String  @id @default(uuid())
+  title     String
+  excerpt   String
+  date      String
+  image     String
+  sortOrder Int     @default(0)
+  published Boolean @default(true)
+}
+
+model FooterService {
+  id        String @id @default(uuid())
+  label     String
+  sortOrder Int    @default(0)
+}
+
+model Booking {
+  id              String   @id @default(uuid())
+  checkIn         DateTime
+  checkOut        DateTime
+  adults          Int
+  children        Int      @default(0)
+  roomType        String?
+  roomCount       Int      @default(1)
+  guestName       String
+  email           String
+  phone           String
+  specialRequests String?
+  status          String   @default("pending")
+  source          String   @default("website")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
