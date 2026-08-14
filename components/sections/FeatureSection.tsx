@@ -6,7 +6,7 @@ export function FeatureSection() {
   return (
     <section className="bg-white">
       <div className="mx-auto grid max-w-7xl lg:grid-cols-2">
-        <div className="relative min-h-95 lg:min-h-140">
+        <div className="relative min-h-[380px] lg:min-h-[560px]">
           <Image
             src={images.feature}
             alt="Featured guest bedroom"

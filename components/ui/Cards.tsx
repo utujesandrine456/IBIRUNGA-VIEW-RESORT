@@ -1,61 +1,111 @@
+"use client";
+
+import { motion } from "framer-motion";
 import {
   ArrowRightIcon,
-  BarIcon,
-  BeachIcon,
-  BedIcon,
   CircleCheckIcon,
   CoffeeIcon,
-  HotelBuildingIcon,
-  OfferBadgeIcon,
   QuoteIcon,
   ShowerIcon,
-  SpaBowlIcon,
   StarIcon,
   TvIcon,
   WifiIcon,
+  BedIcon,
 } from "@/components/ui/Icons";
 import Image from "next/image";
+import type { ComponentType, SVGProps } from "react";
 
-const amenityIcons = [
-  BedIcon,
-  BeachIcon,
-  HotelBuildingIcon,
-  SpaBowlIcon,
-  BarIcon,
-  OfferBadgeIcon,
-];
+function ImigongoAccent() {
+  return (
+    <svg viewBox="0 0 320 8" preserveAspectRatio="none" className="h-2 w-full" aria-hidden="true">
+      <path
+        d="M0 4 L16 0 L32 4 L48 0 L64 4 L80 0 L96 4 L112 0 L128 4 L144 0 L160 4 L176 0 L192 4 L208 0 L224 4 L240 0 L256 4 L272 0 L288 4 L304 0 L320 4"
+        fill="none"
+        stroke="#c19a6b"
+        strokeWidth="1.5"
+        opacity="0.55"
+      />
+    </svg>
+  );
+}
 
 export function ServiceCard({
   title,
   description,
+  image,
   index,
 }: {
   title: string;
   description: string;
+  image: string;
   index: number;
 }) {
-  const Icon = amenityIcons[index % amenityIcons.length];
   return (
-    <article className="group relative overflow-hidden bg-white px-8 py-10 shadow-[0_10px_35px_rgba(60,40,20,0.06)] transition-transform duration-300 hover:-translate-y-1">
-      <Icon
-        className="pointer-events-none absolute -right-2 top-6 h-28 w-28 text-[#e8e4dc] opacity-70"
-        aria-hidden="true"
-      />
-      <div className="relative mb-6 text-brown">
-        <Icon className="h-12 w-12" />
+    <motion.article
+      className="group relative flex flex-col overflow-hidden rounded-tl-2xl bg-white shadow-[0_10px_35px_rgba(60,40,20,0.07)]"
+      whileHover={{ y: -8, boxShadow: "0 24px 55px rgba(60,40,20,0.14)" }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="relative aspect-5/4 overflow-hidden">
+        <Image
+          src={image}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-brown-deep/90 via-brown/25 to-transparent" />
+        <div className="absolute inset-0 border border-white/10" />
+
+        <span className="absolute top-4 left-4 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-[0.22em] text-white backdrop-blur-sm">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+
+        <div className="absolute right-0 bottom-0 left-0 p-6">
+          <h3 className="text-xl font-bold text-white md:text-2xl">{title}</h3>
+        </div>
       </div>
-      <h3 className="relative mb-3 text-xl font-bold text-[#1f1f1f]">{title}</h3>
-      <p className="relative mb-6 text-[15px] leading-relaxed text-muted">{description}</p>
-      <a
-        href="#rooms"
-        className="relative inline-flex items-center gap-2 text-sm font-semibold text-[#1f1f1f] transition-colors hover:text-brown"
-      >
-        Read More
-        <ArrowRightIcon className="h-4 w-4" />
-      </a>
-    </article>
+
+      <div className="relative flex flex-1 flex-col border-t border-cream-dark px-6 py-5">
+        <ImigongoAccent />
+        <p className="mt-4 mb-5 flex-1 text-[15px] leading-relaxed text-muted">{description}</p>
+        <a
+          href="#rooms"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-brown transition-colors hover:text-brown-dark"
+        >
+          Read More
+          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </a>
+      </div>
+
+      <span className="pointer-events-none absolute top-0 left-0 h-16 w-16 border-t-2 border-l-2 border-brown/30 rounded-tl-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+    </motion.article>
   );
 }
+
+type FeatureIcon = ComponentType<SVGProps<SVGSVGElement>>;
+
+const roomFeatures: { Icon: FeatureIcon; label: string }[] = [
+  { Icon: WifiIcon, label: "WiFi" },
+  { Icon: TvIcon, label: "TV" },
+  { Icon: CoffeeIcon, label: "Coffee" },
+  { Icon: BedIcon, label: "Bed" },
+  { Icon: ShowerIcon, label: "Bath" },
+];
+
+function RoomFeatureChip({ Icon, label }: { Icon: FeatureIcon; label: string }) {
+  return (
+    <div className="group/chip flex flex-col items-center gap-2 cursor-pointer">
+      <span className="relative inline-flex h-11 w-11 items-center justify-center rounded-full bg-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_4px_14px_rgba(107,68,35,0.1)] ring-1 ring-border transition-all duration-300 group-hover/chip:-translate-y-0.5 group-hover/chip:bg-brown group-hover/chip:shadow-[0_8px_20px_rgba(107,68,35,0.22)] group-hover/chip:ring-brown/30">
+        <Icon className="h-5 w-5 text-brown transition-colors duration-300 group-hover/chip:text-white" />
+      </span>
+      <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brown/65 transition-colors group-hover/chip:text-brown">
+        {label}
+      </span>
+    </div>
+  );
+}
+
 
 export function RoomCard({
   src,
@@ -69,7 +119,11 @@ export function RoomCard({
   category: string;
 }) {
   return (
-    <article className="group overflow-hidden bg-white shadow-[0_8px_30px_rgba(60,40,20,0.06)]">
+    <motion.article
+      className="group overflow-hidden bg-white shadow-[0_8px_30px_rgba(60,40,20,0.06)]"
+      whileHover={{ y: -4, boxShadow: "0 16px 40px rgba(60,40,20,0.12)" }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="relative aspect-4/3 overflow-hidden">
         <Image
           src={src}
@@ -93,15 +147,13 @@ export function RoomCard({
         <p className="mb-5 text-[15px] leading-relaxed text-muted">
           Spacious comfort with fresh linens, thoughtful details, and a calm atmosphere for your stay.
         </p>
-        <div className="flex items-center gap-4 text-muted/80">
-          <WifiIcon className="h-5 w-5" />
-          <TvIcon className="h-5 w-5" />
-          <CoffeeIcon className="h-5 w-5" />
-          <BedIcon className="h-5 w-5" />
-          <ShowerIcon className="h-5 w-5" />
+        <div className="flex flex-wrap items-end gap-4 border-t border-cream-dark pt-5">
+          {roomFeatures.map(({ Icon, label }) => (
+            <RoomFeatureChip key={label} Icon={Icon} label={label} />
+          ))}
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -158,7 +210,11 @@ export function BlogCard({
   excerpt: string;
 }) {
   return (
-    <article className="group overflow-hidden bg-white shadow-[0_8px_30px_rgba(60,40,20,0.05)]">
+    <motion.article
+      className="group overflow-hidden bg-white shadow-[0_8px_30px_rgba(60,40,20,0.05)]"
+      whileHover={{ y: -4, boxShadow: "0 16px 40px rgba(60,40,20,0.1)" }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="relative aspect-16/11 overflow-hidden">
         <Image
           src={src}
@@ -184,7 +240,7 @@ export function BlogCard({
           <ArrowRightIcon className="h-4 w-4" />
         </a>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -200,7 +256,11 @@ export function PricingCard({
   features: string[];
 }) {
   return (
-    <article className="relative flex flex-col overflow-hidden rounded-md bg-white px-8 py-9 shadow-[0_12px_40px_rgba(60,40,20,0.08)]">
+    <motion.article
+      className="relative flex flex-col overflow-hidden rounded-md bg-white px-8 py-9 shadow-[0_12px_40px_rgba(60,40,20,0.08)]"
+      whileHover={{ y: -5, boxShadow: "0 20px 50px rgba(60,40,20,0.14)" }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
       <span className="absolute top-0 right-5 flex h-20 w-7 items-end justify-center bg-[#cfcfcf] pb-3">
         <span className="rotate-180 text-[10px] font-semibold tracking-[0.18em] text-white uppercase [writing-mode:vertical-rl]">
           Monthly
@@ -218,14 +278,16 @@ export function PricingCard({
           </li>
         ))}
       </ul>
-      <a
+      <motion.a
         href="#contact"
-        className="mt-auto inline-flex items-center justify-center gap-2 bg-[#5d4037] px-6 py-3.5 text-[13px] font-semibold tracking-[0.12em] uppercase transition-colors hover:bg-[#4a331e]"
+        className="mt-auto inline-flex items-center justify-center gap-2 bg-[#5d4037] px-6 py-3.5 text-[13px] font-semibold tracking-[0.12em] uppercase"
         style={{ color: "#ffffff" }}
+        whileHover={{ scale: 1.03, backgroundColor: "#4a331e" }}
+        whileTap={{ scale: 0.97 }}
       >
         Get Started
         <ArrowRightIcon className="h-4 w-4" style={{ color: "#ffffff" }} />
-      </a>
-    </article>
+      </motion.a>
+    </motion.article>
   );
 }

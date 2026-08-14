@@ -46,10 +46,18 @@ export function TwitterIcon(props: IconProps) {
 
 export function InstagramIcon(props: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
-      <rect x="4" y="4" width="16" height="16" rx="4" />
-      <circle cx="12" cy="12" r="3.5" />
-      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1.25" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -87,52 +95,63 @@ export function PlayIcon(props: IconProps) {
   );
 }
 
+export function YoutubeIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8ZM9.7 15.5V8.5L15.8 12 9.7 15.5Z" />
+    </svg>
+  );
+}
+
 export function WifiIcon(props: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" {...props}>
-      <path d="M4.5 9.5a11 11 0 0 1 15 0" />
-      <path d="M7.5 12.5a7 7 0 0 1 9 0" />
-      <path d="M10.5 15.5a3 3 0 0 1 3 0" />
-      <circle cx="12" cy="18.2" r="1" fill="currentColor" stroke="none" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M2.5 9.5a13.5 13.5 0 0 1 19 0" />
+      <path d="M5.5 12.5a9.5 9.5 0 0 1 13 0" />
+      <path d="M8.5 15.5a5.5 5.5 0 0 1 7 0" />
+      <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
     </svg>
   );
 }
 
 export function TvIcon(props: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" {...props}>
-      <rect x="3.5" y="6" width="17" height="11" rx="1.5" />
-      <path d="M8 20h8M12 17v3" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2.5" y="5.5" width="19" height="12" rx="2" />
+      <path d="M8 21h8" />
+      <path d="M12 17.5V21" />
     </svg>
   );
 }
 
 export function CoffeeIcon(props: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" {...props}>
-      <path d="M6 8h9v6a3.5 3.5 0 0 1-3.5 3.5H9.5A3.5 3.5 0 0 1 6 14V8Z" />
-      <path d="M15 9h1.8a2.2 2.2 0 0 1 0 4.4H15" />
-      <path d="M7 19.5h8" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M5 9h10v5.5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9Z" />
+      <path d="M15 10h2a2.5 2.5 0 0 1 0 5H15" />
+      <path d="M6 20h8" />
+      <path d="M8 5V7M12 4V7M16 5V7" />
     </svg>
   );
 }
 
 export function BedIcon(props: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" {...props}>
-      <path d="M4 18V9.5A2.5 2.5 0 0 1 6.5 7H10a2 2 0 0 1 2 2v1" />
-      <path d="M4 13h16v5" />
-      <path d="M4 18h16" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 18V10a2.5 2.5 0 0 1 2.5-2.5H9a2 2 0 0 1 2 2v1" />
+      <path d="M3 14h18" />
+      <path d="M3 18h18" />
+      <path d="M5 18v2M19 18v2" />
     </svg>
   );
 }
 
 export function ShowerIcon(props: IconProps) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" {...props}>
-      <path d="M7 4h7a3 3 0 0 1 3 3v2H10" />
-      <path d="M10 9v2" />
-      <path d="M8.5 14v.01M11.5 14v.01M14.5 14v.01M8.5 17v.01M11.5 17v.01M14.5 17v.01" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M6 4h8a3 3 0 0 1 3 3v3H9" />
+      <path d="M9 10v2.5" />
+      <path d="M7.5 15.5v1M10.5 15.5v1M13.5 15.5v1M7.5 18.5v1M10.5 18.5v1M13.5 18.5v1" />
     </svg>
   );
 }

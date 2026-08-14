@@ -1,14 +1,18 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   FacebookIcon,
   InstagramIcon,
-  LinkedInIcon,
   MailIcon,
   MapPinIcon,
   PhoneIcon,
-  TwitterIcon,
+  YoutubeIcon,
 } from "@/components/ui/Icons";
+import { ImigongoFooterArt } from "@/components/ui/ImigongoPattern";
+import { MotionItem, MotionStagger } from "@/components/ui/Motion";
+import { fadeInUp, staggerContainer } from "@/lib/motion";
+import { handleSectionNav } from "@/lib/scroll";
 import { navLinks, site } from "@/lib/content";
 
 const services = [
@@ -20,11 +24,22 @@ const services = [
   "Meeting Room",
 ];
 
+const socialLinks = [
+  { Icon: FacebookIcon, label: "Facebook" },
+  { Icon: YoutubeIcon, label: "YouTube" },
+  { Icon: InstagramIcon, label: "Instagram" },
+] as const;
+
 export function Footer() {
   return (
-    <footer className="bg-footer text-white">
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-2 md:px-6 lg:grid-cols-4">
-        <div>
+    <footer className="relative mt-16 overflow-hidden bg-footer text-white md:mt-20">
+      <ImigongoFooterArt className="pointer-events-none absolute inset-0" />
+
+      <MotionStagger
+        className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 py-16 md:grid-cols-2 md:px-6 lg:grid-cols-4"
+        stagger={staggerContainer}
+      >
+        <MotionItem variants={fadeInUp}>
           <h3 className="mb-5 text-2xl font-bold">{site.name}</h3>
           <ul className="space-y-3 text-sm text-white/70">
             <li className="flex items-start gap-3">
@@ -40,31 +55,36 @@ export function Footer() {
               {site.email}
             </li>
           </ul>
-        </div>
+        </MotionItem>
 
-        <div>
+        <MotionItem variants={fadeInUp}>
           <h4 className="mb-5 text-lg font-bold">Quick Links</h4>
           <ul className="space-y-2.5 text-sm text-white/70">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className="transition-colors hover:text-white">
+                <motion.a
+                  href={link.href}
+                  className="inline-block"
+                  whileHover={{ x: 4, color: "#ffffff" }}
+                  onClick={(e) => handleSectionNav(e, link.href)}
+                >
                   {link.label}
-                </a>
+                </motion.a>
               </li>
             ))}
           </ul>
-        </div>
+        </MotionItem>
 
-        <div>
+        <MotionItem variants={fadeInUp}>
           <h4 className="mb-5 text-lg font-bold">Services</h4>
           <ul className="space-y-2.5 text-sm text-white/70">
             {services.map((service) => (
               <li key={service}>{service}</li>
             ))}
           </ul>
-        </div>
+        </MotionItem>
 
-        <div>
+        <MotionItem variants={fadeInUp}>
           <h4 className="mb-5 text-lg font-bold">Newsletter</h4>
           <p className="mb-4 text-sm leading-relaxed text-white/70">
             Subscribe for stay offers, dining news, and seasonal updates from the resort.
@@ -78,35 +98,42 @@ export function Footer() {
               placeholder="Your email"
               className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-white outline-none placeholder:text-white/40"
             />
-            <button
+            <motion.button
               type="submit"
-              className="bg-brown px-4 text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-brown-dark"
+              className="bg-brown px-4 text-sm font-semibold uppercase tracking-wider text-white"
+              whileHover={{ backgroundColor: "#54341a", scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               →
-            </button>
+            </motion.button>
           </form>
-        </div>
-      </div>
+        </MotionItem>
+      </MotionStagger>
 
-      <div className="border-t border-white/10">
+      <motion.div
+        className="relative z-10 border-t border-white/10"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-5 text-sm text-white/55 md:flex-row md:px-6">
           <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <a href="#" aria-label="Facebook" className="hover:text-white">
-              <FacebookIcon className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Twitter" className="hover:text-white">
-              <TwitterIcon className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Instagram" className="hover:text-white">
-              <InstagramIcon className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-white">
-              <LinkedInIcon className="h-4 w-4" />
-            </a>
+          <div className="flex items-center gap-5">
+            {socialLinks.map(({ Icon, label }) => (
+              <motion.a
+                key={label}
+                href="#"
+                aria-label={label}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5"
+                whileHover={{ scale: 1.12, backgroundColor: "rgba(255,255,255,0.12)" }}
+              >
+                <Icon className="h-5 w-5 text-white" />
+              </motion.a>
+            ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </footer>
   );
 }

@@ -1,5 +1,5 @@
-import { Footer } from "@/components/layout/Footer";
-import { Navbar, TopBar } from "@/components/layout/Header";
+import { SiteHeader } from "@/components/layout/Header";
+import { PageBackground } from "@/components/layout/PageBackground";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { AmenitiesSection } from "@/components/sections/AmenitiesSection";
 import { BlogSection } from "@/components/sections/BlogSection";
@@ -10,25 +10,26 @@ import { Hero } from "@/components/sections/Hero";
 import { RoomsSection } from "@/components/sections/RoomsSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { VideoTourSection } from "@/components/sections/VideoTourSection";
+import { Footer } from "@/components/layout/Footer";
 
 export default function Home() {
   return (
     <>
-      <TopBar />
-      <div className="relative">
-        <Navbar />
+      <PageBackground />
+      <div className="relative z-10">
+        <SiteHeader />
         <Hero />
+        <BookingBar />
+        <AboutSection />
+        <AmenitiesSection />
+        <RoomsSection />
+        <ExtraServicesSection />
+        <TestimonialsSection />
+        <BookingFormSection />
+        <VideoTourSection />
+        <BlogSection />
+        <Footer />
       </div>
-      <BookingBar />
-      <AboutSection />
-      <AmenitiesSection />
-      <RoomsSection />
-      <ExtraServicesSection />
-      <TestimonialsSection />
-      <BookingFormSection />
-      <VideoTourSection />
-      <BlogSection />
-      <Footer />
     </>
   );
 }

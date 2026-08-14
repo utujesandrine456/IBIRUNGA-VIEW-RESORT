@@ -1,6 +1,8 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { SearchIcon } from "@/components/ui/Icons";
+import { scaleIn } from "@/lib/motion";
 
 function InlineField({
   label,
@@ -35,9 +37,14 @@ function InlineField({
 export function BookingBar() {
   return (
     <section className="relative z-20 -mt-10 px-4 md:px-6">
-      <form
+      <motion.form
         className="mx-auto flex max-w-7xl flex-col overflow-hidden bg-white shadow-[0_18px_50px_rgba(60,40,20,0.12)] lg:flex-row lg:items-stretch"
         onSubmit={(e) => e.preventDefault()}
+        variants={scaleIn}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="grid flex-1 grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center">
           <InlineField label="Check In" type="date" />
@@ -46,14 +53,16 @@ export function BookingBar() {
           <InlineField label="Children" options={["0", "1", "2", "3"]} />
           <InlineField label="Rooms" options={["1", "2", "3"]} />
         </div>
-        <button
+        <motion.button
           type="submit"
-          className="inline-flex items-center justify-center gap-2 bg-brown px-8 py-5 text-sm font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:bg-brown-dark"
+          className="inline-flex items-center justify-center gap-2 bg-brown px-8 py-5 text-sm font-semibold uppercase tracking-[0.14em] text-white"
+          whileHover={{ backgroundColor: "#54341a", scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
         >
           <SearchIcon className="h-4 w-4" />
           Check
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
     </section>
   );
 }

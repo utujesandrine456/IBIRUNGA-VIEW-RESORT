@@ -1,8 +1,10 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { RoomCard } from "@/components/ui/Cards";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { ease } from "@/lib/motion";
 import { images } from "@/lib/content";
 
 export function RoomsSection() {
@@ -44,12 +46,13 @@ export function RoomsSection() {
         />
 
         <div className="relative overflow-hidden">
-          <div
-            className="flex transition-transform duration-500 ease-out"
-            style={{
-              width: `${(rooms.length / perView) * 100}%`,
-              transform: `translateX(-${(index * 100) / rooms.length}%)`,
+          <motion.div
+            className="flex"
+            animate={{
+              x: `-${(index * 100) / rooms.length}%`,
             }}
+            transition={{ duration: 0.6, ease }}
+            style={{ width: `${(rooms.length / perView) * 100}%` }}
           >
             {rooms.map((room) => (
               <div
@@ -60,19 +63,23 @@ export function RoomsSection() {
                 <RoomCard {...room} />
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         <div className="mt-10 flex items-center justify-center gap-3">
           {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-            <button
+            <motion.button
               key={i}
               type="button"
               aria-label={`Go to rooms slide ${i + 1}`}
               onClick={() => setIndex(i)}
-              className={`h-2.5 rounded-full transition-all ${
-                i === index ? "w-8 bg-brown" : "w-2.5 bg-brown/25 hover:bg-brown/40"
+              className={`h-2.5 rounded-full ${
+                i === index ? "bg-brown" : "bg-brown/25 hover:bg-brown/40"
               }`}
+              animate={{ width: i === index ? 32 : 10 }}
+              transition={{ duration: 0.35, ease }}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
             />
           ))}
         </div>

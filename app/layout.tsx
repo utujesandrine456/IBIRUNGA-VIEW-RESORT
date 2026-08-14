@@ -13,9 +13,6 @@ export const metadata: Metadata = {
   title: "Ibirunga View Resort | Luxury Stay in Musanze",
   description:
     "Your gateway to the volcanoes. Experience comfort, hospitality, and stunning views at Ibirunga View Resort in Musanze, Rwanda.",
-  icons: {
-    icon: "logo.png",
-  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

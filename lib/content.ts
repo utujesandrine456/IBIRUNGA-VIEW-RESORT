@@ -12,12 +12,12 @@ export const navLinks = [
   { label: "About", href: "#about" },
   { label: "Our Rooms", href: "#rooms" },
   { label: "Facilities", href: "#amenities" },
-  { label: "Pages", href: "#extra" },
   { label: "Blog", href: "#blog" },
   { label: "Contact", href: "#contact" },
 ];
 
 export const images = {
+  logo: "/logo.png",
   hero: "/LUCIMAGES_20.JPG",
   aboutMain: "/LUCIMAGES_15.JPG",
   aboutSide: "/LUCIMAGES_26.JPG",
@@ -63,26 +63,32 @@ export const amenities = [
   {
     title: "Quality Room",
     description: "Comfortable beds, fresh linens, and thoughtfully arranged spaces for restful nights.",
+    image: "/LUCIMAGES_48.JPG",
   },
   {
     title: "Garden Terrace",
     description: "Open-air lounges and green hillside spaces perfect for morning views and evening calm.",
+    image: "/LUCIMAGES_34.JPG",
   },
   {
     title: "Best Accommodation",
     description: "Welcoming rooms and suites prepared with care for couples, families, and travelers.",
+    image: "/LUCIMAGES_26.JPG",
   },
   {
     title: "Wellness & Spa",
     description: "Unwind with sauna and massage services after a day of volcano adventures.",
+    image: "/LUCIMAGES_22.JPG",
   },
   {
     title: "Restaurants & Bars",
     description: "Enjoy local and international dishes with drinks in a warm dining setting.",
+    image: "/LUCIMAGES_21.JPG",
   },
   {
     title: "Special Offers",
     description: "Thoughtful packages for longer stays, dining extras, and seasonal getaways.",
+    image: "/LUCIMAGES_37.JPG",
   },
 ];
 

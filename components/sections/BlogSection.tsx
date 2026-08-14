@@ -1,5 +1,9 @@
+"use client";
+
 import { BlogCard } from "@/components/ui/Cards";
+import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { fadeInUp, staggerContainer } from "@/lib/motion";
 import { images } from "@/lib/content";
 
 export function BlogSection() {
@@ -11,11 +15,13 @@ export function BlogSection() {
           title="Latest Blog & News"
           description="Stories from the terrace, the rooms, and the warm service that defines Ibirunga View Resort."
         />
-        <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+        <MotionStagger className="grid gap-7 md:grid-cols-2 lg:grid-cols-3" stagger={staggerContainer}>
           {images.blog.map((post) => (
-            <BlogCard key={post.title} {...post} />
+            <MotionItem key={post.title} variants={fadeInUp}>
+              <BlogCard {...post} />
+            </MotionItem>
           ))}
-        </div>
+        </MotionStagger>
       </div>
     </section>
   );

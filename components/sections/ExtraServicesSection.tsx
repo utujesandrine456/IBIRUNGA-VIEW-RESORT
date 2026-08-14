@@ -1,21 +1,23 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { PricingCard } from "@/components/ui/Cards";
-import { CoffeeMillIcon } from "@/components/ui/Icons";
+import { MotionItem, MotionStagger } from "@/components/ui/Motion";
+import { fadeInLeft, fadeInRight, staggerContainer } from "@/lib/motion";
 import { extraServices } from "@/lib/content";
 
 export function ExtraServicesSection() {
   return (
     <section id="extra" className="relative overflow-hidden bg-white py-20 md:py-28">
-      <CoffeeMillIcon
-        className="pointer-events-none absolute -left-6 top-10 h-75 w-62.5 rotate-[-15deg] text-[#ddd6cc] opacity-45 md:left-4"
-        aria-hidden="true"
-      />
-      <CoffeeMillIcon
-        className="pointer-events-none absolute -right-10 bottom-6 h-65 w-55 rotate-18 text-[#ddd6cc] opacity-40"
-        aria-hidden="true"
-      />
-
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-6 lg:grid-cols-[0.95fr_1.15fr] lg:gap-16">
-        <div className="relative max-w-lg py-6">
+        <motion.div
+          className="relative max-w-lg py-6"
+          variants={fadeInLeft}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
           <p className="mb-4 text-[15px] font-semibold text-[#b08d6a]">Best Prices</p>
           <h2 className="mb-6 text-4xl font-bold leading-[1.1] text-black md:text-5xl lg:text-[3.4rem]">
             Extra Services
@@ -28,12 +30,15 @@ export function ExtraServicesSection() {
             From welcome drinks to daily refresh options, choose what fits your stay
             and enjoy warm hospitality with every detail handled for you.
           </p>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2">
+        </motion.div>
+
+        <MotionStagger className="grid gap-6 sm:grid-cols-2" stagger={staggerContainer}>
           {extraServices.map((service) => (
-            <PricingCard key={service.title} {...service} />
+            <MotionItem key={service.title} variants={fadeInRight}>
+              <PricingCard {...service} />
+            </MotionItem>
           ))}
-        </div>
+        </MotionStagger>
       </div>
     </section>
   );

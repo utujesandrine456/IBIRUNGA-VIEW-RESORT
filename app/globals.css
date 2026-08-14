@@ -11,6 +11,7 @@
   --muted: #6b6b6b;
   --border: #e5e1d8;
   --footer: #1a1612;
+  --header-height: 130px;
 }
 
 @theme inline {
@@ -33,7 +34,12 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
   color-scheme: light;
+}
+
+section[id] {
+  scroll-margin-top: var(--header-height);
 }
 
 body {
