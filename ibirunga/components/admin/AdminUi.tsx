@@ -73,8 +73,8 @@ export function AdminButton({
   variant?: "primary" | "danger" | "ghost";
 }) {
   const styles = {
-    primary: "bg-brown text-white hover:bg-brown-dark",
-    danger: "bg-red-700 text-white hover:bg-red-800",
+    primary: "bg-brown text-white! hover:bg-brown-dark",
+    danger: "bg-red-700 text-white! hover:bg-red-800",
     ghost: "border border-border bg-white text-brown-deep hover:bg-cream",
   };
 

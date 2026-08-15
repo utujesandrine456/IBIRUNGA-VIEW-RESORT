@@ -109,28 +109,28 @@ export default function AdminDashboardPage() {
       label: "Total Bookings",
       value: counts.bookings ?? 0,
       href: "/admin/bookings",
-      accent: "from-[#6b4423] to-[#8b5a3c]",
+      color: "bg-[#6b4423]",
       icon: "bookings",
     },
     {
       label: "Pending Requests",
       value: counts.pendingBookings ?? 0,
       href: "/admin/bookings",
-      accent: "from-[#b45309] to-[#d97706]",
+      color: "bg-[#8b5a2b]",
       icon: "pending",
     },
     {
       label: "Rooms Listed",
       value: counts.rooms ?? 0,
       href: "/admin/rooms",
-      accent: "from-[#4b5563] to-[#6b7280]",
+      color: "bg-[#54341a]",
       icon: "rooms",
     },
     {
       label: "Blog Posts",
       value: counts.blogPosts ?? 0,
       href: "/admin/blog",
-      accent: "from-[#047857] to-[#059669]",
+      color: "bg-[#3d2814]",
       icon: "blog",
     },
   ];
@@ -158,7 +158,7 @@ export default function AdminDashboardPage() {
           <button
             type="button"
             onClick={loadDashboard}
-            className="mt-4 rounded-md bg-[#6b4423] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#54341a]"
+            className="mt-4 rounded-md bg-[#6b4423] px-4 py-2 text-sm font-semibold text-white! transition hover:bg-[#54341a]"
           >
             Retry
           </button>
@@ -168,16 +168,16 @@ export default function AdminDashboardPage() {
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {statCards.map((card) => (
           <Link key={card.label} href={card.href} className="group">
-            <div className="overflow-hidden rounded-2xl border border-[#ebe7df] bg-white shadow-[0_8px_30px_rgba(60,40,20,0.05)] transition group-hover:-translate-y-0.5 group-hover:shadow-[0_16px_40px_rgba(60,40,20,0.1)]">
-              <div className={`bg-linear-to-r ${card.accent} px-5 py-4`}>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-white/85">{card.label}</p>
-                  <StatIcon type={card.icon} />
-                </div>
-                <p className="mt-2 text-3xl font-bold text-white">
-                  {loading ? "—" : card.value}
-                </p>
+            <div
+              className={`overflow-hidden rounded-md ${card.color} px-5 py-4 transition group-hover:opacity-90`}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-white!">{card.label}</p>
+                <StatIcon type={card.icon} />
               </div>
+              <p className="mt-2 text-3xl font-bold text-white!">
+                {loading ? "—" : card.value}
+              </p>
             </div>
           </Link>
         ))}

@@ -4,11 +4,11 @@ type Variant = "primary" | "outline" | "outlineLight" | "ghost";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-brown text-white hover:bg-brown-dark border border-brown",
+    "bg-brown text-white! hover:bg-brown-dark border border-brown",
   outline:
-    "bg-transparent text-brown border border-brown hover:bg-brown hover:text-white",
+    "bg-transparent text-brown border border-brown hover:bg-brown hover:text-white!",
   outlineLight:
-    "bg-transparent text-white border border-white hover:bg-white hover:text-brown",
+    "bg-transparent text-white! border border-white hover:bg-white hover:text-brown",
   ghost: "bg-transparent text-brown hover:text-brown-dark px-0",
 };
 

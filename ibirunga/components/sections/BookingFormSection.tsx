@@ -69,25 +69,44 @@ export function BookingFormSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (form.checkOut && form.checkIn && form.checkOut <= form.checkIn) {
+      setStatus("error");
+      setMessage("Check-out date must be after check-in.");
+      return;
+    }
     setStatus("loading");
     setMessage("");
     try {
       await api.createBooking({
-        guestName: form.guestName,
-        email: form.email,
-        phone: form.phone,
+        guestName: form.guestName.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
         checkIn: form.checkIn,
         checkOut: form.checkOut,
         adults: Number(form.adults),
         roomType: form.roomType,
-        specialRequests: form.specialRequests || undefined,
+        specialRequests: form.specialRequests.trim() || undefined,
         source: "contact-form",
       });
       setStatus("success");
       setMessage("Your booking request was sent successfully. We will contact you soon.");
-    } catch {
+      setForm({
+        guestName: "",
+        email: "",
+        phone: "",
+        checkIn: "",
+        checkOut: "",
+        adults: "2",
+        roomType: "Deluxe",
+        specialRequests: "",
+      });
+    } catch (err) {
       setStatus("error");
-      setMessage("Could not send booking request. Please try again or call us directly.");
+      setMessage(
+        err instanceof Error
+          ? err.message
+          : "Could not send booking request. Please try again or call us directly.",
+      );
     }
   }
 

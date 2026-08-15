@@ -97,7 +97,7 @@ function RoomFeatureChip({ Icon, label }: { Icon: FeatureIcon; label: string }) 
   return (
     <div className="group/chip flex flex-col items-center gap-2 cursor-pointer">
       <span className="relative inline-flex h-11 w-11 items-center justify-center rounded-full bg-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_4px_14px_rgba(107,68,35,0.1)] ring-1 ring-border transition-all duration-300 group-hover/chip:-translate-y-0.5 group-hover/chip:bg-brown group-hover/chip:shadow-[0_8px_20px_rgba(107,68,35,0.22)] group-hover/chip:ring-brown/30">
-        <Icon className="h-5 w-5 text-brown transition-colors duration-300 group-hover/chip:text-white" />
+        <Icon className="h-5 w-5 text-brown transition-colors duration-300 group-hover/chip:text-white!" />
       </span>
       <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-brown/65 transition-colors group-hover/chip:text-brown">
         {label}
@@ -132,10 +132,7 @@ export function RoomCard({
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        <div
-          className="absolute inset-x-0 bottom-0 bg-brown px-5 py-2.5 text-sm font-semibold"
-          style={{ color: "#ffffff" }}
-        >
+        <div className="absolute inset-x-0 bottom-0 bg-brown px-5 py-2.5 text-sm font-semibold text-white!">
           From {price} / Night
         </div>
       </div>
@@ -223,7 +220,7 @@ export function BlogCard({
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        <span className="absolute bottom-4 left-4 bg-brown px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white">
+        <span className="absolute bottom-4 left-4 bg-brown px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white!">
           {date}
         </span>
       </div>

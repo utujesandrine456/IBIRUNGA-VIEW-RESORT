@@ -3,15 +3,19 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import {
   CalendarIcon,
+  MailIcon,
+  PhoneIcon,
   RoomDoorIcon,
   UserIcon,
   UsersIcon,
 } from "@/components/ui/Icons";
 import { ease, fadeInLeft, fadeInRight } from "@/lib/motion";
 import { useCmsContent } from "@/components/providers/ContentProvider";
+import { api } from "@/lib/api";
 
 function Field({
   label,
@@ -19,12 +23,20 @@ function Field({
   options,
   placeholder,
   icon,
+  value,
+  onChange,
+  required,
+  min,
 }: {
   label: string;
   type?: string;
   options?: string[];
   placeholder?: string;
   icon: ReactNode;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  min?: string;
 }) {
   return (
     <label className="block">
@@ -35,24 +47,98 @@ function Field({
         {label}
       </span>
       {options ? (
-        <select className="w-full appearance-none border border-[#d8d8d8] bg-white px-3 py-3 text-sm text-[#6b6b6b] outline-none transition focus:border-brown">
+        <select
+          className="w-full appearance-none border border-[#d8d8d8] bg-white px-3 py-3 text-sm text-[#2c2c2c] outline-none transition focus:border-brown"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required={required}
+        >
           {options.map((option) => (
-            <option key={option}>{option}</option>
+            <option key={option} value={option}>
+              {option}
+            </option>
           ))}
         </select>
       ) : (
         <input
           type={type}
-          className="w-full border border-[#d8d8d8] bg-white px-3 py-3 text-sm text-[#6b6b6b] outline-none transition focus:border-brown"
+          className="w-full border border-[#d8d8d8] bg-white px-3 py-3 text-sm text-[#2c2c2c] outline-none transition focus:border-brown"
           placeholder={placeholder ?? label}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required={required}
+          min={min}
         />
       )}
     </label>
   );
 }
 
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function tomorrowIso() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
 export function Hero() {
   const { hero } = useCmsContent();
+  const [form, setForm] = useState({
+    checkIn: todayIso(),
+    checkOut: tomorrowIso(),
+    adults: "1",
+    children: "0",
+    roomType: "Deluxe",
+    guestName: "",
+    email: "",
+    phone: "",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  function update(field: keyof typeof form, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (form.checkOut <= form.checkIn) {
+      setStatus("error");
+      setMessage("Check-out date must be after check-in.");
+      return;
+    }
+
+    setStatus("loading");
+    setMessage("");
+    try {
+      await api.createBooking({
+        checkIn: form.checkIn,
+        checkOut: form.checkOut,
+        adults: Number(form.adults),
+        children: Number(form.children),
+        roomType: form.roomType,
+        guestName: form.guestName.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        source: "hero-form",
+      });
+      setStatus("success");
+      setMessage("Request sent. We will confirm availability shortly.");
+      setForm((prev) => ({
+        ...prev,
+        guestName: "",
+        email: "",
+        phone: "",
+      }));
+    } catch (err) {
+      setStatus("error");
+      setMessage(err instanceof Error ? err.message : "Could not send request. Please try again.");
+    }
+  }
+
   return (
     <section id="home" className="relative min-h-[92vh] overflow-hidden">
       <motion.div
@@ -88,7 +174,14 @@ export function Hero() {
               "Rest above the hills of Musanze and wake to volcano views, warm hospitality, and thoughtfully prepared spaces for every guest."}
           </p>
           <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-            <Button variant="outlineLight">{hero.ctaLabel ?? "Discover"}</Button>
+            <Button
+              variant="outlineLight"
+              onClick={() =>
+                document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              {hero.ctaLabel ?? "Discover"}
+            </Button>
           </motion.div>
         </motion.div>
 
@@ -100,46 +193,96 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.5, ease }}
         >
           <h2 className="mb-7 text-left text-[1.75rem] font-bold text-black">Book A Room</h2>
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field
                 label="Check In Date"
                 type="date"
-                placeholder="mm / dd / yyyy"
                 icon={<CalendarIcon className="h-4 w-4" />}
+                value={form.checkIn}
+                onChange={(v) => update("checkIn", v)}
+                min={todayIso()}
+                required
               />
               <Field
                 label="Check Out Date"
                 type="date"
-                placeholder="mm / dd / yyyy"
                 icon={<CalendarIcon className="h-4 w-4" />}
+                value={form.checkOut}
+                onChange={(v) => update("checkOut", v)}
+                min={form.checkIn || todayIso()}
+                required
               />
             </div>
             <Field
               label="Adults"
-              options={["Adults", "1", "2", "3", "4"]}
+              options={["1", "2", "3", "4"]}
               icon={<UserIcon className="h-4 w-4" />}
+              value={form.adults}
+              onChange={(v) => update("adults", v)}
+              required
             />
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field
                 label="Child"
-                options={["Child", "0", "1", "2", "3"]}
+                options={["0", "1", "2", "3"]}
                 icon={<UsersIcon className="h-4 w-4" />}
+                value={form.children}
+                onChange={(v) => update("children", v)}
+                required
               />
               <Field
                 label="Room"
-                options={["Room", "Deluxe", "Standard", "Suite"]}
+                options={["Deluxe", "Standard", "Suite"]}
                 icon={<RoomDoorIcon className="h-4 w-4" />}
+                value={form.roomType}
+                onChange={(v) => update("roomType", v)}
+                required
+              />
+            </div>
+            <Field
+              label="Full Name"
+              type="text"
+              placeholder="Your full name"
+              icon={<UserIcon className="h-4 w-4" />}
+              value={form.guestName}
+              onChange={(v) => update("guestName", v)}
+              required
+            />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field
+                label="Email"
+                type="email"
+                placeholder="you@email.com"
+                icon={<MailIcon className="h-4 w-4" />}
+                value={form.email}
+                onChange={(v) => update("email", v)}
+                required
+              />
+              <Field
+                label="Phone"
+                type="tel"
+                placeholder="+250 ..."
+                icon={<PhoneIcon className="h-4 w-4" />}
+                value={form.phone}
+                onChange={(v) => update("phone", v)}
+                required
               />
             </div>
             <motion.button
               type="submit"
-              className="mt-1 bg-[#5d4026] px-6 py-3.5 text-[13px] font-semibold tracking-[0.12em] text-white uppercase sm:w-[70%]"
-              whileHover={{ scale: 1.03, backgroundColor: "#4a331e" }}
+              disabled={status === "loading"}
+              className="mt-1 bg-[#6b4423] px-6 py-3.5 text-[13px] font-semibold tracking-[0.12em] text-white! uppercase disabled:opacity-60 sm:w-[70%]"
+              whileHover={{ scale: status === "loading" ? 1 : 1.03, backgroundColor: "#54341a" }}
               whileTap={{ scale: 0.97 }}
             >
-              Check Availability
+              {status === "loading" ? "Sending..." : "Check Availability"}
             </motion.button>
+            {message ? (
+              <p className={`text-sm ${status === "success" ? "text-[#6b4423]" : "text-red-600"}`}>
+                {message}
+              </p>
+            ) : null}
           </form>
         </motion.div>
       </div>

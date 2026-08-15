@@ -1,13 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BookingsService } from './bookings.service';
+import { CreateBookingDto } from './create-booking.dto';
 
 @Controller('bookings')
 export class PublicBookingsController {
   constructor(private bookings: BookingsService) {}
 
   @Post()
-  create(@Body() body: Parameters<BookingsService['create']>[0]) {
+  create(@Body() body: CreateBookingDto) {
     return this.bookings.create(body);
   }
 }

@@ -93,7 +93,7 @@ export function Footer() {
             />
             <motion.button
               type="submit"
-              className="bg-brown px-4 text-sm font-semibold uppercase tracking-wider text-white"
+              className="bg-brown px-4 text-sm font-semibold uppercase tracking-wider text-white!"
               whileHover={{ backgroundColor: "#54341a", scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

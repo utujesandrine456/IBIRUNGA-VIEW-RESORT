@@ -28,7 +28,7 @@ const contentNav: NavItem[] = [
 ];
 
 function NavIcon({ name }: { name: string }) {
-  const cls = "h-[18px] w-[18px]";
+  const cls = "h-[17px] w-[17px]";
   switch (name) {
     case "dashboard":
       return (
@@ -134,15 +134,46 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   return (
     <Link
       href={item.href}
-      className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition ${
+      className={`group flex items-center gap-3 rounded-md px-3 py-2.5 text-[13.5px] font-medium transition ${
         active
-          ? "bg-[#6b4423] !text-white shadow-[0_4px_14px_rgba(107,68,35,0.35)]"
-          : "text-white hover:bg-white/8"
+          ? "bg-[#6b4423] text-white!"
+          : "text-white! hover:bg-[#6b4423]/80"
       }`}
     >
-      <NavIcon name={item.icon} />
-      {item.label}
+      <span
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md transition ${
+          active
+            ? "bg-white/20 text-white"
+            : "bg-[#2a221c] text-white group-hover:bg-white/15"
+        }`}
+      >
+        <NavIcon name={item.icon} />
+      </span>
+      <span className="truncate text-white">{item.label}</span>
     </Link>
+  );
+}
+
+function NavGroup({
+  title,
+  items,
+  pathname,
+}: {
+  title: string;
+  items: NavItem[];
+  pathname: string;
+}) {
+  return (
+    <div>
+      <p className="mb-2.5 px-3 text-[10px] font-semibold tracking-[0.2em] text-white/50 uppercase">
+        {title}
+      </p>
+      <div className="space-y-0.5">
+        {items.map((item) => (
+          <NavLink key={item.href} item={item} pathname={pathname} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -169,9 +200,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f4f1eb]">
-        <div className="flex items-center gap-3 text-brown">
-          <span className="h-5 w-5 animate-spin rounded-full border-2 border-brown/20 border-t-brown" />
+      <div className="flex min-h-screen items-center justify-center bg-[#f3efe8]">
+        <div className="flex items-center gap-3 text-[#6b4423]">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#6b4423]/20 border-t-[#6b4423]" />
           Loading workspace...
         </div>
       </div>
@@ -179,72 +210,74 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f1eb]">
+    <div className="min-h-screen bg-[#f3efe8]">
       <div className="flex min-h-screen">
-        <aside className="flex w-[280px] shrink-0 flex-col border-r border-[#2a2118] bg-[#14110e]">
-          <div className="border-b border-white/8 px-6 py-6">
+        <aside className="flex w-68 shrink-0 flex-col bg-[#1a1410]">
+          <div className="border-b border-[#2a221c] px-5 py-5">
             <div className="flex items-center gap-3">
-              <Image src="/logo.png" alt="" width={40} height={40} className="brightness-0 invert" />
-              <div>
-                <p className="text-[11px] font-semibold tracking-[0.22em] text-[#c19a6b] uppercase">
+              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-[#6b4423]">
+                <Image
+                  src="/logo.png"
+                  alt="Ibirunga"
+                  width={34}
+                  height={34}
+                  className="brightness-0 invert"
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold tracking-[0.22em] text-[#c19a6b] uppercase">
                   Ibirunga CMS
                 </p>
-                <p className="text-sm font-semibold text-white">Admin Portal</p>
+                <p className="truncate text-[15px] font-semibold text-white">Admin Portal</p>
               </div>
             </div>
           </div>
 
-          <nav className="flex-1 space-y-6 overflow-y-auto px-4 py-5">
-            <div>
-              <p className="mb-2 px-3 text-[11px] font-semibold tracking-[0.18em] text-white/35 uppercase">
-                Overview
-              </p>
-              <div className="space-y-1">
-                {mainNav.map((item) => (
-                  <NavLink key={item.href} item={item} pathname={pathname} />
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-2 px-3 text-[11px] font-semibold tracking-[0.18em] text-white/35 uppercase">
-                Website Content
-              </p>
-              <div className="space-y-1">
-                {contentNav.map((item) => (
-                  <NavLink key={item.href} item={item} pathname={pathname} />
-                ))}
-              </div>
-            </div>
+          <nav className="flex-1 space-y-7 overflow-y-auto px-3 py-5 scrollbar:thin [scrollbar-color:#3a322c_transparent]">
+            <NavGroup title="Overview" items={mainNav} pathname={pathname} />
+            <NavGroup title="Website Content" items={contentNav} pathname={pathname} />
           </nav>
 
-          <div className="border-t border-white/8 p-4">
+          <div className="space-y-3 border-t border-[#2a221c] p-4">
+            <div className="rounded-md bg-[#2a221c] px-3.5 py-3">
+              <p className="text-[11px] font-medium text-white/50">Signed in as</p>
+              <p className="mt-0.5 truncate text-sm font-semibold text-white">Admin</p>
+            </div>
             <button
               type="button"
               onClick={() => {
                 clearToken();
                 router.push("/admin/login");
               }}
-              className="flex w-full items-center justify-center gap-2 rounded-md border border-white/12 bg-white/5 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-white/10"
+              className="flex w-full items-center justify-center gap-2 rounded-md border border-[#3a322c] bg-[#2a221c] px-3 py-2.5 text-sm font-medium text-white! transition hover:bg-[#6b4423]"
             >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                <path d="M16 17l5-5-5-5M21 12H9" />
+              </svg>
               Sign out
             </button>
           </div>
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 border-b border-[#e5e1d8] bg-white/90 px-8 py-4 backdrop-blur-md">
+          <header className="sticky top-0 z-20 border-b border-[#e8e2d8] bg-[#faf8f4]/90 px-8 py-3.5 backdrop-blur-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#9a9a9a]">Ibirunga View Resort</p>
-                <p className="text-sm font-semibold text-[#2a1d14]">Content Management Workspace</p>
+                <p className="text-[11px] font-semibold tracking-[0.14em] text-[#9a8a7a] uppercase">
+                  Ibirunga View Resort
+                </p>
+                <p className="text-sm font-semibold text-[#2a1d14]">Content Management</p>
               </div>
               <Link
                 href="/"
                 target="_blank"
-                className="rounded-lg border border-[#e5e1d8] bg-white px-4 py-2 text-xs font-semibold text-brown transition hover:border-brown/30 hover:bg-cream"
+                className="inline-flex items-center gap-2 rounded-md bg-[#6b4423] px-4 py-2 text-xs font-semibold text-white! transition hover:bg-[#54341a]"
               >
-                View website →
+                View website
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5 text-white">
+                  <path d="M7 17L17 7M8 7h9v9" />
+                </svg>
               </Link>
             </div>
           </header>

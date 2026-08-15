@@ -158,7 +158,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-[#6b4423] px-4 py-4 text-sm font-semibold tracking-[0.08em] text-white uppercase transition hover:bg-[#54341a] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg bg-[#6b4423] px-4 py-4 text-sm font-semibold tracking-[0.08em] text-white! uppercase transition hover:bg-[#54341a] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Signing in..." : "Sign in to dashboard"}
             </button>
