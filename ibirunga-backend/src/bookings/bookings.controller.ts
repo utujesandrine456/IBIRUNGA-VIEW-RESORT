@@ -11,6 +11,11 @@ export class PublicBookingsController {
   create(@Body() body: CreateBookingDto) {
     return this.bookings.create(body);
   }
+
+  @Get('my')
+  findByEmail(@Query('email') email: string) {
+    return this.bookings.findByEmail(email);
+  }
 }
 
 @Controller('admin/bookings')

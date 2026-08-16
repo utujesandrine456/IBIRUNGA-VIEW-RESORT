@@ -13,6 +13,7 @@ import {
 import { ease } from "@/lib/motion";
 import { handleSectionNav } from "@/lib/scroll";
 import { useCmsContent } from "@/components/providers/ContentProvider";
+import { BookingNotifications } from "@/components/layout/BookingNotifications";
 
 const accent = "#c19a6b";
 
@@ -142,6 +143,7 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
         </nav>
 
         <div className="flex items-center justify-end gap-3">
+          <BookingNotifications />
           <motion.a
             href="#contact"
             className="hidden px-6 py-3 text-[13px] font-semibold tracking-[0.12em] uppercase lg:inline-flex"

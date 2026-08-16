@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
           </div>
 
           <div className="max-w-md">
-            <p className="text-xs font-semibold tracking-[0.3em] text-[#c19a6b] uppercase">
+            <p className="text-xs font-semibold tracking-[0.2em] text-[#c19a6b]">
               Content Management System
             </p>
             <h1 className="mt-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-[2.75rem]">
@@ -97,10 +97,10 @@ export default function AdminLoginPage() {
             <div className="mb-6 inline-flex lg:hidden">
               <Image src="/logo.png" alt="" width={52} height={52} />
             </div>
-            <p className="text-xs font-semibold tracking-[0.22em] text-[#c19a6b] uppercase">
+            <p className="text-xs font-semibold tracking-[0.18em] text-[#c19a6b]">
               Admin Access
             </p>
-            <h2 className="mt-3 text-3xl font-bold text-[#2a1d14]">Sign in</h2>
+            <h2 className="mt-3 text-3xl font-bold text-[#2a1d14]">Sign In</h2>
             <p className="mt-2 text-sm leading-relaxed text-[#6b6b6b]">
               Enter your credentials to open the dashboard.
             </p>
@@ -158,9 +158,9 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-[#6b4423] px-4 py-4 text-sm font-semibold tracking-[0.08em] text-white! uppercase transition hover:bg-[#54341a] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg bg-[#6b4423] px-4 py-4 text-sm font-semibold text-white transition hover:bg-[#54341a] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Signing in..." : "Sign in to dashboard"}
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 

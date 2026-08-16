@@ -115,4 +115,17 @@ export const api = {
     specialRequests?: string;
     source?: string;
   }) => request('/bookings', { method: 'POST', body: JSON.stringify(data) }),
+
+  getMyBookings: (email: string) =>
+    request<Array<{
+      id: string;
+      guestName: string;
+      checkIn: string;
+      checkOut: string;
+      roomType: string | null;
+      adults: number;
+      children: number;
+      status: string;
+      createdAt: string;
+    }>>(`/bookings/my?email=${encodeURIComponent(email)}`),
 };

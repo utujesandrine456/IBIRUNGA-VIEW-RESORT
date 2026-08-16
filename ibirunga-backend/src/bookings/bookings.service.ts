@@ -56,6 +56,25 @@ export class BookingsService {
     return this.prisma.booking.delete({ where: { id } });
   }
 
+  findByEmail(email: string) {
+    if (!email) return [];
+    return this.prisma.booking.findMany({
+      where: { email: email.toLowerCase() },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        guestName: true,
+        checkIn: true,
+        checkOut: true,
+        roomType: true,
+        adults: true,
+        children: true,
+        status: true,
+        createdAt: true,
+      },
+    });
+  }
+
   stats() {
     return this.prisma.booking.groupBy({
       by: ['status'],
