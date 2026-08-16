@@ -3,17 +3,17 @@ import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+const ADMIN_EMAIL = 'admin@ibirunga.com';
+const ADMIN_PASSWORD = 'Admin123';
+
 async function main() {
-  const passwordHash = await bcrypt.hash(
-    process.env.ADMIN_PASSWORD ?? 'admin123',
-    10,
-  );
+  const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
   await prisma.admin.upsert({
-    where: { email: process.env.ADMIN_EMAIL ?? 'admin@ibirunga.com' },
-    update: {},
+    where: { email: ADMIN_EMAIL },
+    update: { passwordHash },
     create: {
-      email: process.env.ADMIN_EMAIL ?? 'admin@ibirunga.com',
+      email: ADMIN_EMAIL,
       passwordHash,
       name: 'Admin',
     },
