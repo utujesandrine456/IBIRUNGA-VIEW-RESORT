@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: ibirunga-backend
+    runtime: node
+    rootDir: ibirunga-backend
+    buildCommand: npm install && npm run build:prod
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
