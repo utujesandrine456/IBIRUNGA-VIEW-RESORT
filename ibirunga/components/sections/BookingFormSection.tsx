@@ -61,7 +61,7 @@ export function BookingFormSection() {
     checkIn: "",
     checkOut: "",
     adults: "2",
-    roomType: "Deluxe",
+    roomType: "Room 200 — Bisoke Wing ($40)",
     specialRequests: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -97,7 +97,7 @@ export function BookingFormSection() {
         checkIn: "",
         checkOut: "",
         adults: "2",
-        roomType: "Deluxe",
+        roomType: "Room 200 — Bisoke Wing ($40)",
         specialRequests: "",
       });
     } catch (err) {
@@ -142,7 +142,26 @@ export function BookingFormSection() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Adult" options={["1", "2", "3", "4"]} value={form.adults} onChange={(v) => setForm({ ...form, adults: v })} required />
-              <Field label="Room Type" options={["Deluxe", "Standard", "Suite"]} value={form.roomType} onChange={(v) => setForm({ ...form, roomType: v })} required />
+              <Field label="Room Type" options={[
+                "Room 200 — Bisoke Wing ($40)",
+                "Room 201 — Bisoke Wing ($30)",
+                "Room 202 — Bisoke Wing ($30)",
+                "Room 203 — Bisoke Wing ($40)",
+                "Room 204 — Bisoke Wing ($40)",
+                "Room 205 — Sabyinyo Wing ($100)",
+                "Room 206 — Sabyinyo Wing ($40)",
+                "Room 207 — Sabyinyo Wing ($30)",
+                "Room 208 — Sabyinyo Wing ($30)",
+                "Room 209 — Sabyinyo Wing ($40)",
+                "Room 210 — Sabyinyo Wing ($40)",
+                "Room 211 — Karisimbi Wing ($140)",
+                "Room 212 — Karisimbi Wing ($30)",
+                "Room 213 — Karisimbi Wing ($30)",
+                "Apartment I — Gahinga Wing ($50)",
+                "Apartment II — Gahinga Wing ($50)",
+                "Suite Home — Muhabura Wing ($70)",
+                "Room 214 — Muhabura Wing ($50)",
+              ]} value={form.roomType} onChange={(v) => setForm({ ...form, roomType: v })} required />
             </div>
             <Field label="Special Requests" value={form.specialRequests} onChange={(v) => setForm({ ...form, specialRequests: v })} />
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

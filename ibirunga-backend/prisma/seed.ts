@@ -95,7 +95,7 @@ async function main() {
         eyebrow: 'Accommodation',
         title: 'Rooms & Suites',
         description:
-          'Choose from thoughtfully designed rooms and suites with hillside views, fresh linens, and warm hospitality.',
+          'Five distinct wings named after Rwanda\'s iconic volcanoes — Bisoke, Sabyinyo, Karisimbi, Gahinga, and Muhabura. Each wing offers a unique experience with rooms priced from 30,000 Frw per night.',
       }),
     },
     {
@@ -170,17 +170,35 @@ async function main() {
     });
   }
 
-  if ((await prisma.room.count()) === 0) {
-    await prisma.room.createMany({
-      data: [
-        { title: 'Deluxe Double Room', category: 'Deluxe', price: '$85', image: '/LUCIMAGES_26.JPG', sortOrder: 0 },
-        { title: 'Standard Twin Room', category: 'Standard', price: '$65', image: '/LUCIMAGES_46.JPG', sortOrder: 1 },
-        { title: 'Family Suite', category: 'Suite', price: '$120', image: '/LUCIMAGES_48.JPG', sortOrder: 2 },
-        { title: 'Executive Room', category: 'Executive', price: '$95', image: '/LUCIMAGES_27.JPG', sortOrder: 3 },
-        { title: 'Garden View Room', category: 'Deluxe', price: '$75', image: '/LUCIMAGES_30.JPG', sortOrder: 4 },
-      ],
-    });
-  }
+  // Clear and re-seed rooms with real data
+  await prisma.room.deleteMany();
+  await prisma.room.createMany({
+    data: [
+      // THE BISOKE WINGS
+      { title: 'Room 200 — Bisoke Wing', category: 'The Bisoke Wing', price: '40,000 Frw / $40', description: 'A well-appointed room in our Bisoke Wing offering comfort and stunning views of the surrounding volcanic landscape.', image: '/LUCIMAGES_26.JPG', sortOrder: 0 },
+      { title: 'Room 201 — Bisoke Wing', category: 'The Bisoke Wing', price: '30,000 Frw / $30', description: 'Cozy and comfortable room in the Bisoke Wing with fresh linens and warm hospitality.', image: '/LUCIMAGES_46.JPG', sortOrder: 1 },
+      { title: 'Room 202 — Bisoke Wing', category: 'The Bisoke Wing', price: '30,000 Frw / $30', description: 'Relaxing room in the Bisoke Wing, perfect for solo travelers or couples.', image: '/LUCIMAGES_48.JPG', sortOrder: 2 },
+      { title: 'Room 203 — Bisoke Wing', category: 'The Bisoke Wing', price: '40,000 Frw / $40', description: 'Spacious Bisoke Wing room with thoughtful details and a calm atmosphere.', image: '/LUCIMAGES_27.JPG', sortOrder: 3 },
+      { title: 'Room 204 — Bisoke Wing', category: 'The Bisoke Wing', price: '40,000 Frw / $40', description: 'Premium Bisoke Wing room offering modern amenities and serene hillside surroundings.', image: '/LUCIMAGES_30.JPG', sortOrder: 4 },
+      // THE SABYINYO WINGS
+      { title: 'Room 205 — Sabyinyo Wing', category: 'The Sabyinyo Wing', price: '100,000 Frw / $100', description: 'Our flagship Sabyinyo suite — expansive, elegantly furnished, with panoramic volcano views.', image: '/LUCIMAGES_26.JPG', sortOrder: 5 },
+      { title: 'Room 206 — Sabyinyo Wing', category: 'The Sabyinyo Wing', price: '40,000 Frw / $40', description: 'A beautifully appointed room in the Sabyinyo Wing with premium bedding and a tranquil setting.', image: '/LUCIMAGES_46.JPG', sortOrder: 6 },
+      { title: 'Room 207 — Sabyinyo Wing', category: 'The Sabyinyo Wing', price: '30,000 Frw / $30', description: 'Comfortable Sabyinyo room ideal for guests seeking a restful retreat after volcano adventures.', image: '/LUCIMAGES_48.JPG', sortOrder: 7 },
+      { title: 'Room 208 — Sabyinyo Wing', category: 'The Sabyinyo Wing', price: '30,000 Frw / $30', description: 'Well-designed room in the Sabyinyo Wing with warm décor and attentive service.', image: '/LUCIMAGES_27.JPG', sortOrder: 8 },
+      { title: 'Room 209 — Sabyinyo Wing', category: 'The Sabyinyo Wing', price: '40,000 Frw / $40', description: 'Inviting Sabyinyo Wing room with garden-facing windows and premium amenities.', image: '/LUCIMAGES_30.JPG', sortOrder: 9 },
+      { title: 'Room 210 — Sabyinyo Wing', category: 'The Sabyinyo Wing', price: '40,000 Frw / $40', description: 'A refined room in the Sabyinyo Wing offering a peaceful escape in the heart of Musanze.', image: '/LUCIMAGES_34.JPG', sortOrder: 10 },
+      // THE KARISIMBI WINGS
+      { title: 'Room 211 — Karisimbi Wing', category: 'The Karisimbi Wing', price: '150,000 Frw / $140', description: 'The premier Karisimbi suite — our most luxurious offering with exclusive furnishings and breathtaking volcano vistas.', image: '/LUCIMAGES_26.JPG', sortOrder: 11 },
+      { title: 'Room 212 — Karisimbi Wing', category: 'The Karisimbi Wing', price: '30,000 Frw / $30', description: 'A well-crafted room in the Karisimbi Wing offering relaxed comfort and highland serenity.', image: '/LUCIMAGES_46.JPG', sortOrder: 12 },
+      { title: 'Room 213 — Karisimbi Wing', category: 'The Karisimbi Wing', price: '30,000 Frw / $30', description: 'Cozy and welcoming Karisimbi Wing room, perfect for a peaceful stay in Musanze.', image: '/LUCIMAGES_48.JPG', sortOrder: 13 },
+      // THE GAHINGA WINGS
+      { title: 'Apartment I — Gahinga Wing', category: 'The Gahinga Wing', price: '50,000 Frw / $50', description: 'Spacious Gahinga apartment with a living area, ideal for families or extended stays.', image: '/LUCIMAGES_27.JPG', sortOrder: 14 },
+      { title: 'Apartment II — Gahinga Wing', category: 'The Gahinga Wing', price: '50,000 Frw / $50', description: 'A generously sized Gahinga apartment with modern amenities and a warm, homely feel.', image: '/LUCIMAGES_30.JPG', sortOrder: 15 },
+      // THE MUHABURA WINGS
+      { title: 'Suite Home — Muhabura Wing', category: 'The Muhabura Wing', price: '70,000 Frw / $70', description: 'Our Muhabura Suite Home — a private retreat combining suite luxury with the warmth of a home away from home.', image: '/LUCIMAGES_26.JPG', sortOrder: 16 },
+      { title: 'Room 214 — Muhabura Wing', category: 'The Muhabura Wing', price: '50,000 Frw / $50', description: 'A refined room in the Muhabura Wing offering elevated comfort and serene garden views.', image: '/LUCIMAGES_46.JPG', sortOrder: 17 },
+    ],
+  });
 
   if ((await prisma.extraService.count()) === 0) {
     await prisma.extraService.createMany({
