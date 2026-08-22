@@ -8,6 +8,7 @@ import { useCmsContent } from "@/components/providers/ContentProvider";
 
 export function AmenitiesSection() {
   const { amenities, amenitiesMeta } = useCmsContent();
+  const displayed = amenities.slice(0, 3);
   return (
     <section id="amenities" className="relative overflow-hidden bg-cream py-20 md:py-28">
       <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-6">
@@ -20,7 +21,7 @@ export function AmenitiesSection() {
           }
         />
         <MotionStagger className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3" stagger={staggerContainer}>
-          {amenities.map((item, index) => (
+          {displayed.map((item, index) => (
             <MotionItem key={item.title} variants={fadeInUp}>
               <ServiceCard
                 title={item.title}

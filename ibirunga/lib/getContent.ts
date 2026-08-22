@@ -49,7 +49,7 @@ function staticFallback(): CmsContent {
       eyebrow: 'Accommodation',
       title: 'Rooms & Suites',
       description:
-        'Choose from thoughtfully designed rooms and suites with hillside views, fresh linens, and warm hospitality.',
+        "Five distinct wings named after Rwanda's iconic volcanoes — Bisoke, Sabyinyo, Karisimbi, Gahinga, and Muhabura. Each wing offers a unique experience with rooms priced from 30,000 Frw per night.",
     },
     extraMeta: {
       eyebrow: 'Best Prices',
@@ -133,7 +133,11 @@ function staticFallback(): CmsContent {
 }
 
 export async function getContent(): Promise<CmsContent> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
+  // API_URL works server-side (Vercel), NEXT_PUBLIC_API_URL works client-side
+  const apiUrl =
+    process.env.API_URL ??
+    process.env.NEXT_PUBLIC_API_URL ??
+    'http://localhost:8000/api';
 
   try {
     const res = await fetch(`${apiUrl}/content`, {
