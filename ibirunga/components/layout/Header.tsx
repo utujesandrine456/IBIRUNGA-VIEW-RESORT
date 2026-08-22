@@ -224,9 +224,9 @@ export function SiteHeader() {
 
   return (
     <motion.header
-      className="fixed inset-x-0 top-0 z-50"
+      className="fixed inset-x-0 top-0 z-50 translate-y-[44px]"
       initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      animate={{ y: 44, opacity: 1 }}
       transition={{ duration: 0.7, ease }}
     >
       <TopBar />

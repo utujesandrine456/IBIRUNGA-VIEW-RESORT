@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/layout/Header";
+import { PromoBanner } from "@/components/layout/PromoBanner";
 import { PageBackground } from "@/components/layout/PageBackground";
 import { ContentProvider } from "@/components/providers/ContentProvider";
 import { AboutSection } from "@/components/sections/AboutSection";
@@ -20,6 +21,7 @@ export default async function Home() {
     <ContentProvider content={content}>
       <PageBackground />
       <div className="relative z-10">
+        <PromoBanner />
         <SiteHeader />
         <Hero />
         <BookingBar />

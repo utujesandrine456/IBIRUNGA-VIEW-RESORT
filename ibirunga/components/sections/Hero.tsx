@@ -91,7 +91,7 @@ export function Hero() {
     checkOut: tomorrowIso(),
     adults: "1",
     children: "0",
-    roomType: "Deluxe",
+    roomType: "Room 200 — Bisoke Wing ($40)",
     guestName: "",
     email: "",
     phone: "",
@@ -233,7 +233,26 @@ export function Hero() {
               />
               <Field
                 label="Room"
-                options={["Deluxe", "Standard", "Suite"]}
+                options={[
+                  "Room 200 — Bisoke Wing ($40)",
+                  "Room 201 — Bisoke Wing ($30)",
+                  "Room 202 — Bisoke Wing ($30)",
+                  "Room 203 — Bisoke Wing ($40)",
+                  "Room 204 — Bisoke Wing ($40)",
+                  "Room 205 — Sabyinyo Wing ($100)",
+                  "Room 206 — Sabyinyo Wing ($40)",
+                  "Room 207 — Sabyinyo Wing ($30)",
+                  "Room 208 — Sabyinyo Wing ($30)",
+                  "Room 209 — Sabyinyo Wing ($40)",
+                  "Room 210 — Sabyinyo Wing ($40)",
+                  "Room 211 — Karisimbi Wing ($140)",
+                  "Room 212 — Karisimbi Wing ($30)",
+                  "Room 213 — Karisimbi Wing ($30)",
+                  "Apartment I — Gahinga Wing ($50)",
+                  "Apartment II — Gahinga Wing ($50)",
+                  "Suite Home — Muhabura Wing ($70)",
+                  "Room 214 — Muhabura Wing ($50)",
+                ]}
                 icon={<RoomDoorIcon className="h-4 w-4" />}
                 value={form.roomType}
                 onChange={(v) => update("roomType", v)}
