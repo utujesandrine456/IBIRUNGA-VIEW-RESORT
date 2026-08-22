@@ -1,5 +1,5 @@
 import { SiteHeader } from "@/components/layout/Header";
-import { PromoBanner } from "@/components/layout/PromoBanner";
+import { PromoProvider } from "@/components/layout/PromoBanner";
 import { PageBackground } from "@/components/layout/PageBackground";
 import { ContentProvider } from "@/components/providers/ContentProvider";
 import { AboutSection } from "@/components/sections/AboutSection";
@@ -19,21 +19,22 @@ export default async function Home() {
 
   return (
     <ContentProvider content={content}>
-      <PageBackground />
-      <div className="relative z-10">
-        <PromoBanner />
-        <SiteHeader />
-        <Hero />
-        <BookingBar />
-        <AboutSection />
-        <AmenitiesSection />
-        <RoomsSection />
-        <TestimonialsSection />
-        <BookingFormSection />
-        <VideoTourSection />
-        <BlogSection />
-        <Footer />
-      </div>
+      <PromoProvider>
+        <PageBackground />
+        <div className="relative z-10">
+          <SiteHeader />
+          <Hero />
+          <BookingBar />
+          <AboutSection />
+          <AmenitiesSection />
+          <RoomsSection />
+          <TestimonialsSection />
+          <BookingFormSection />
+          <VideoTourSection />
+          <BlogSection />
+          <Footer />
+        </div>
+      </PromoProvider>
     </ContentProvider>
   );
 }
