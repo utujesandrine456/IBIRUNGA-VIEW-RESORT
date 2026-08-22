@@ -14,6 +14,7 @@ import { ease } from "@/lib/motion";
 import { handleSectionNav } from "@/lib/scroll";
 import { useCmsContent } from "@/components/providers/ContentProvider";
 import { BookingNotifications } from "@/components/layout/BookingNotifications";
+import { usePromoBanner } from "@/components/layout/PromoBanner";
 
 const accent = "#c19a6b";
 
@@ -214,6 +215,8 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
+  const { bannerVisible } = usePromoBanner();
+  const headerTop = bannerVisible ? 40 : 0;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -224,10 +227,10 @@ export function SiteHeader() {
 
   return (
     <motion.header
-      className="fixed inset-x-0 top-0 z-50 translate-y-[44px]"
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 44, opacity: 1 }}
-      transition={{ duration: 0.7, ease }}
+      className="fixed inset-x-0 top-0 z-50"
+      initial={{ y: -200, opacity: 0 }}
+      animate={{ y: headerTop, opacity: 1 }}
+      transition={{ duration: 0.5, ease }}
     >
       <TopBar />
       <Navbar scrolled={scrolled} />
