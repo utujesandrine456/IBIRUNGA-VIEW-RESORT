@@ -6,13 +6,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OptionalJwtAuthGuard = exports.JwtAuthGuard = void 0;
+exports.AdminAuthGuard = exports.JwtAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
-    handleRequest(err, user) {
-        if (err || !user) {
-            throw err ?? new common_1.UnauthorizedException('Authentication required');
+    handleRequest(err, user, info) {
+        if (err) {
+            throw err;
+        }
+        if (!user) {
+            const reason = info?.name === 'TokenExpiredError'
+                ? 'Session expired. Please sign in again.'
+                : info?.name === 'JsonWebTokenError'
+                    ? 'Invalid authentication token.'
+                    : 'Authentication required';
+            throw new common_1.UnauthorizedException(reason);
         }
         return user;
     }
@@ -21,13 +29,21 @@ exports.JwtAuthGuard = JwtAuthGuard;
 exports.JwtAuthGuard = JwtAuthGuard = __decorate([
     (0, common_1.Injectable)()
 ], JwtAuthGuard);
-let OptionalJwtAuthGuard = class OptionalJwtAuthGuard {
+let AdminAuthGuard = class AdminAuthGuard {
     canActivate(context) {
+        const request = context.switchToHttp().getRequest();
+        const user = request.user;
+        if (!user) {
+            throw new common_1.UnauthorizedException('Authentication required');
+        }
+        if (user.role !== 'admin') {
+            throw new common_1.ForbiddenException('Admin access required');
+        }
         return true;
     }
 };
-exports.OptionalJwtAuthGuard = OptionalJwtAuthGuard;
-exports.OptionalJwtAuthGuard = OptionalJwtAuthGuard = __decorate([
+exports.AdminAuthGuard = AdminAuthGuard;
+exports.AdminAuthGuard = AdminAuthGuard = __decorate([
     (0, common_1.Injectable)()
-], OptionalJwtAuthGuard);
+], AdminAuthGuard);
 //# sourceMappingURL=jwt-auth.guard.js.map

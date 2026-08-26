@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { AdminButton, AdminCard, AdminPanel } from "@/components/admin/AdminUi";
 import { api } from "@/lib/api";
 import type { Booking } from "@/lib/cms-types";
@@ -42,7 +43,9 @@ export default function AdminBookingsPage() {
       const data = await api.admin.bookings.list();
       setBookings(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load bookings");
+      const msg = err instanceof Error ? err.message : "Failed to load bookings";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -53,14 +56,24 @@ export default function AdminBookingsPage() {
   }, []);
 
   async function updateStatus(id: string, status: string) {
-    await api.admin.bookings.updateStatus(id, status);
-    await load();
+    try {
+      await api.admin.bookings.updateStatus(id, status);
+      toast.success(status === "confirmed" ? "Booking confirmed" : "Booking cancelled");
+      await load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update booking");
+    }
   }
 
   async function remove(id: string) {
     if (!confirm("Delete this booking?")) return;
-    await api.admin.bookings.remove(id);
-    await load();
+    try {
+      await api.admin.bookings.remove(id);
+      toast.success("Booking deleted");
+      await load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete booking");
+    }
   }
 
   return (
@@ -91,7 +104,7 @@ export default function AdminBookingsPage() {
                       <StatusBadge status={booking.status} />
                     </div>
                     <p className="mt-1 text-sm text-muted">
-                      {booking.email} · {booking.phone}
+                      {booking.phone}
                     </p>
                   </div>
                   <p className="text-xs text-muted">

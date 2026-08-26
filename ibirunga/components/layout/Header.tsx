@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   FacebookIcon,
@@ -10,6 +9,7 @@ import {
   PhoneIcon,
   YoutubeIcon,
 } from "@/components/ui/Icons";
+import { CmsImage } from "@/components/ui/CmsImage";
 import { ease } from "@/lib/motion";
 import { handleSectionNav } from "@/lib/scroll";
 import { useCmsContent } from "@/components/providers/ContentProvider";
@@ -26,9 +26,10 @@ const socialLinks = [
 
 function LogoMark() {
   const { site } = useCmsContent();
+  const src = site?.logoUrl || "/logo.png";
   return (
-    <Image
-      src={site?.logoUrl ?? "/logo.png"}
+    <CmsImage
+      src={src}
       alt="Ibirunga View Resort logo"
       width={52}
       height={52}
@@ -147,7 +148,7 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
           <BookingNotifications />
           <motion.a
             href="#contact"
-            className="hidden px-6 py-3 text-[13px] font-semibold tracking-[0.12em] uppercase lg:inline-flex"
+            className="hidden rounded-md px-6 py-3 text-[13px] font-semibold tracking-[0.12em] uppercase lg:inline-flex"
             style={{ backgroundColor: accent, color: "#ffffff" }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -198,7 +199,7 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
               ))}
               <motion.a
                 href="#contact"
-                className="mt-2 inline-flex items-center justify-center px-6 py-3 text-[13px] font-semibold tracking-[0.12em] uppercase"
+                className="mt-2 inline-flex items-center justify-center rounded-md px-6 py-3 text-[13px] font-semibold tracking-[0.12em] uppercase"
                 style={{ backgroundColor: accent, color: "#ffffff" }}
                 onClick={(e) => handleSectionNav(e, "#contact", () => setOpen(false))}
                 whileHover={{ scale: 1.02 }}
@@ -216,7 +217,8 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const { bannerVisible } = usePromoBanner();
-  const headerTop = bannerVisible ? 40 : 0;
+  /* Sit below promo when open; flush to top when banner is closed */
+  const headerTop = bannerVisible ? 48 : 0;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);

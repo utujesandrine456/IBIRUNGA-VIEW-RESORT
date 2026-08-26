@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 export declare class BookingsService {
     private prisma;
@@ -10,15 +11,12 @@ export declare class BookingsService {
         roomType?: string;
         roomCount?: number;
         guestName: string;
-        email: string;
+        email?: string;
         phone: string;
         specialRequests?: string;
         source?: string;
-    }): import(".prisma/client").Prisma.Prisma__BookingClient<{
+    }): Prisma.Prisma__BookingClient<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -26,16 +24,16 @@ export declare class BookingsService {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
-    findAll(status?: string): import(".prisma/client").Prisma.PrismaPromise<{
+    findAll(status?: string): Prisma.PrismaPromise<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -43,16 +41,16 @@ export declare class BookingsService {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }[]>;
     findOne(id: string): Promise<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -60,16 +58,16 @@ export declare class BookingsService {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }>;
-    updateStatus(id: string, status: string): import(".prisma/client").Prisma.Prisma__BookingClient<{
+    updateStatus(id: string, status: string): Prisma.Prisma__BookingClient<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -77,16 +75,16 @@ export declare class BookingsService {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
-    delete(id: string): import(".prisma/client").Prisma.Prisma__BookingClient<{
+    delete(id: string): Prisma.Prisma__BookingClient<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -94,14 +92,16 @@ export declare class BookingsService {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
-    findByEmail(email: string): never[] | import(".prisma/client").Prisma.PrismaPromise<{
+    findByEmail(email: string): never[] | Prisma.PrismaPromise<{
         id: string;
-        createdAt: Date;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -109,8 +109,20 @@ export declare class BookingsService {
         roomType: string | null;
         guestName: string;
         status: string;
+        createdAt: Date;
     }[]>;
-    stats(): import(".prisma/client").Prisma.GetBookingGroupByPayload<{
+    findByPhone(phone: string): Promise<{
+        id: string;
+        guestName: string;
+        checkIn: Date;
+        checkOut: Date;
+        roomType: string | null;
+        adults: number;
+        children: number;
+        status: string;
+        createdAt: Date;
+    }[]>;
+    stats(): Prisma.GetBookingGroupByPayload<{
         by: "status"[];
         _count: {
             status: true;

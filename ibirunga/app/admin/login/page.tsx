@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { api, setToken } from "@/lib/api";
+import { toast } from "sonner";
+import { api, setStoredAdmin, setToken } from "@/lib/api";
 
 function MailIcon() {
   return (
@@ -37,9 +38,13 @@ export default function AdminLoginPage() {
     try {
       const res = await api.login(email.trim(), password);
       setToken(res.accessToken);
-      router.push("/admin");
+      setStoredAdmin({ ...res.admin, role: res.admin.role ?? "admin" });
+      toast.success("Welcome back! Signed in successfully.");
+      router.replace("/admin");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed. Please check your credentials.");
+      const msg = err instanceof Error ? err.message : "Login failed. Please check your credentials.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -97,9 +102,6 @@ export default function AdminLoginPage() {
             <div className="mb-6 inline-flex lg:hidden">
               <Image src="/logo.png" alt="" width={52} height={52} />
             </div>
-            <p className="text-xs font-semibold tracking-[0.18em] text-[#c19a6b]">
-              Admin Access
-            </p>
             <h2 className="mt-3 text-3xl font-bold text-[#2a1d14]">Sign In</h2>
             <p className="mt-2 text-sm leading-relaxed text-[#6b6b6b]">
               Enter your credentials to open the dashboard.
@@ -158,17 +160,11 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-[#6b4423] px-4 py-4 text-sm font-semibold text-white transition hover:bg-[#54341a] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg bg-[#6b4423] px-4 py-4 text-md font-semibold text-white transition hover:bg-[#54341a] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
-
-          <div className="mt-10 border-t border-[#ebe7df] pt-6">
-            <p className="text-center text-xs leading-relaxed text-[#9a9a9a] lg:text-left">
-              Secure admin area for authorized staff only.
-            </p>
-          </div>
         </div>
       </div>
     </div>

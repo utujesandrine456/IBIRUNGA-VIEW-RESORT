@@ -8,7 +8,7 @@ export default function AdminBookingFormPage() {
       sectionId="booking-form"
       fields={[
         { name: "title", label: "Section title" },
-        { name: "image", label: "Side image path" },
+        { name: "image", label: "Side image", type: "image" },
       ]}
     />
   );

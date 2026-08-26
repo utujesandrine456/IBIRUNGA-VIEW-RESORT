@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { AdminCard, AdminPanel, SectionForm } from "@/components/admin/AdminUi";
 import { api } from "@/lib/api";
 import type { SiteSettings } from "@/lib/cms-types";
@@ -16,26 +17,33 @@ export default function AdminSitePage() {
     logoUrl: "",
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    api.admin.getSite().then((data) => data && setValues(data)).catch(console.error);
+    api.admin
+      .getSite()
+      .then((data) => data && setValues(data))
+      .catch((err) =>
+        toast.error(err instanceof Error ? err.message : "Failed to load site settings"),
+      );
   }, []);
 
   async function save() {
     setLoading(true);
     try {
       await api.admin.updateSite(values);
-      setMessage("Site settings saved.");
+      toast.success("Site settings saved — website will update shortly");
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Save failed");
+      toast.error(err instanceof Error ? err.message : "Save failed");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <AdminPanel title="Site Settings" description="Global contact details, branding, and logo path.">
+    <AdminPanel
+      title="Site Settings"
+      description="Global contact details and branding. Saved changes sync to the live website."
+    >
       <AdminCard>
         <SectionForm
           fields={[
@@ -45,14 +53,18 @@ export default function AdminSitePage() {
             { name: "phoneAlt", label: "Alternate phone" },
             { name: "email", label: "Email" },
             { name: "address", label: "Address" },
-            { name: "logoUrl", label: "Logo path", placeholder: "/logo.png" },
+            {
+              name: "logoUrl",
+              label: "Logo",
+              type: "image",
+              placeholder: "/logo.png",
+            },
           ]}
           values={values}
           onChange={(name, value) => setValues((prev) => ({ ...prev, [name]: value }))}
           onSubmit={save}
           loading={loading}
         />
-        {message ? <p className="mt-4 text-sm text-brown">{message}</p> : null}
       </AdminCard>
     </AdminPanel>
   );

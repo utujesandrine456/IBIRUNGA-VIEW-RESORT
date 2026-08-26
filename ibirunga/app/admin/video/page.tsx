@@ -8,7 +8,7 @@ export default function AdminVideoPage() {
       sectionId="video"
       fields={[
         { name: "title", label: "Title" },
-        { name: "backgroundImage", label: "Background image path" },
+        { name: "backgroundImage", label: "Background image", type: "image" },
         { name: "youtubeUrl", label: "YouTube URL" },
       ]}
     />

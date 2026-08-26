@@ -25,7 +25,7 @@ export default function AdminBlogPage() {
           { name: "title", label: "Title" },
           { name: "excerpt", label: "Excerpt", type: "textarea" },
           { name: "date", label: "Date label" },
-          { name: "image", label: "Image path" },
+          { name: "image", label: "Image", type: "image" },
           { name: "sortOrder", label: "Sort order", type: "number" },
           { name: "published", label: "Published", type: "checkbox" },
         ]}

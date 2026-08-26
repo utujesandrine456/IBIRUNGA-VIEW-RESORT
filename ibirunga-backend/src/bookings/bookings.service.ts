@@ -1,5 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+
+/** Digits only, for reliable phone matching across formats. */
+function phoneDigits(value: string) {
+  return (value ?? '').replace(/\D/g, '');
+}
+
+const myBookingSelect = {
+  id: true,
+  guestName: true,
+  checkIn: true,
+  checkOut: true,
+  roomType: true,
+  adults: true,
+  children: true,
+  status: true,
+  createdAt: true,
+} as const;
 
 @Injectable()
 export class BookingsService {
@@ -13,7 +31,7 @@ export class BookingsService {
     roomType?: string;
     roomCount?: number;
     guestName: string;
-    email: string;
+    email?: string;
     phone: string;
     specialRequests?: string;
     source?: string;
@@ -27,8 +45,8 @@ export class BookingsService {
         roomType: data.roomType,
         roomCount: data.roomCount ?? 1,
         guestName: data.guestName,
-        email: data.email,
-        phone: data.phone,
+        email: (data.email ?? '').trim().toLowerCase(),
+        phone: data.phone.trim(),
         specialRequests: data.specialRequests,
         source: data.source ?? 'website',
       },
@@ -61,18 +79,52 @@ export class BookingsService {
     return this.prisma.booking.findMany({
       where: { email: email.toLowerCase() },
       orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        guestName: true,
-        checkIn: true,
-        checkOut: true,
-        roomType: true,
-        adults: true,
-        children: true,
-        status: true,
-        createdAt: true,
-      },
+      select: myBookingSelect,
     });
+  }
+
+  /**
+   * Look up bookings by phone. Matches regardless of spaces/dashes/+
+   * by comparing digit-only forms (uses last 9 digits as fallback).
+   */
+  async findByPhone(phone: string) {
+    const digits = phoneDigits(phone);
+    if (digits.length < 9) return [];
+
+    const tail = digits.slice(-9);
+
+    // Postgres: strip non-digits then match full or last-9
+    const rows = await this.prisma.$queryRaw<
+      Array<{
+        id: string;
+        guestName: string;
+        checkIn: Date;
+        checkOut: Date;
+        roomType: string | null;
+        adults: number;
+        children: number;
+        status: string;
+        createdAt: Date;
+      }>
+    >(Prisma.sql`
+      SELECT
+        id,
+        "guestName",
+        "checkIn",
+        "checkOut",
+        "roomType",
+        adults,
+        children,
+        status,
+        "createdAt"
+      FROM "Booking"
+      WHERE
+        regexp_replace(phone, '[^0-9]', '', 'g') = ${digits}
+        OR regexp_replace(phone, '[^0-9]', '', 'g') LIKE ${'%' + tail}
+      ORDER BY "createdAt" DESC
+    `);
+
+    return rows;
   }
 
   stats() {

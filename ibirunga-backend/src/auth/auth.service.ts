@@ -11,7 +11,11 @@ export class AuthService {
   ) {}
 
   async login(email: string, password: string) {
-    const admin = await this.prisma.admin.findUnique({ where: { email } });
+    const normalizedEmail = email.trim().toLowerCase();
+    const admin = await this.prisma.admin.findUnique({
+      where: { email: normalizedEmail },
+    });
+
     if (!admin) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -24,11 +28,30 @@ export class AuthService {
     const token = this.jwt.sign({
       sub: admin.id,
       email: admin.email,
+      role: 'admin',
     });
 
     return {
       accessToken: token,
-      admin: { id: admin.id, email: admin.email, name: admin.name },
+      tokenType: 'Bearer',
+      expiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
+      admin: {
+        id: admin.id,
+        email: admin.email,
+        name: admin.name,
+        role: 'admin' as const,
+      },
     };
+  }
+
+  async me(adminId: string) {
+    const admin = await this.prisma.admin.findUnique({
+      where: { id: adminId },
+      select: { id: true, email: true, name: true },
+    });
+    if (!admin) {
+      throw new UnauthorizedException('Admin account not found or revoked.');
+    }
+    return { ...admin, role: 'admin' as const };
   }
 }

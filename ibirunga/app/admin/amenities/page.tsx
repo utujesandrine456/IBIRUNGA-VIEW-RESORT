@@ -24,7 +24,7 @@ export default function AdminAmenitiesPage() {
         fields={[
           { name: "title", label: "Title" },
           { name: "description", label: "Description", type: "textarea" },
-          { name: "image", label: "Image path" },
+          { name: "image", label: "Image", type: "image" },
           { name: "sortOrder", label: "Sort order", type: "number" },
           { name: "published", label: "Published", type: "checkbox" },
         ]}

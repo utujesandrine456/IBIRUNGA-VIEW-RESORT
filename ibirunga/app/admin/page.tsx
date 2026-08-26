@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { api } from "@/lib/api";
 
 type Activity = {
@@ -94,7 +95,9 @@ export default function AdminDashboardPage() {
       setCounts(res.counts);
       setActivities(res.recentActivities ?? []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load dashboard");
+      const msg = err instanceof Error ? err.message : "Failed to load dashboard";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -264,7 +267,7 @@ export default function AdminDashboardPage() {
               {[
                 { label: "Amenities", value: counts.amenities ?? 0 },
                 { label: "Testimonials", value: counts.testimonials ?? 0 },
-                { label: "Extra Services", value: counts.extraServices ?? 0 },
+                { label: "Rooms", value: counts.rooms ?? 0 },
               ].map((item) => (
                 <div
                   key={item.label}

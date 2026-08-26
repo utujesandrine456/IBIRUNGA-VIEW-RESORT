@@ -73,7 +73,6 @@ export function BookingBar() {
     children: "0",
     rooms: "1",
     guestName: "",
-    email: "",
     phone: "",
   });
   const [showContact, setShowContact] = useState(false);
@@ -99,9 +98,9 @@ export function BookingBar() {
       return;
     }
 
-    if (!form.guestName.trim() || !form.email.trim() || !form.phone.trim()) {
+    if (!form.guestName.trim() || !form.phone.trim()) {
       setStatus("error");
-      setMessage("Please fill in name, email, and phone.");
+      setMessage("Please fill in name and phone.");
       return;
     }
 
@@ -115,7 +114,6 @@ export function BookingBar() {
         children: Number(form.children),
         roomCount: Number(form.rooms),
         guestName: form.guestName.trim(),
-        email: form.email.trim(),
         phone: form.phone.trim(),
         source: "booking-bar",
       });
@@ -125,7 +123,6 @@ export function BookingBar() {
       setForm((prev) => ({
         ...prev,
         guestName: "",
-        email: "",
         phone: "",
       }));
     } catch (err) {
@@ -198,27 +195,19 @@ export function BookingBar() {
         </div>
 
         {showContact ? (
-          <div className="grid gap-3 border-t border-border bg-cream/50 px-4 py-4 sm:grid-cols-3">
+          <div className="grid gap-3 border-t border-border bg-cream/50 px-4 py-4 sm:grid-cols-2">
             <input
               type="text"
               placeholder="Full name"
-              className="border border-border bg-white px-3 py-3 text-sm outline-none focus:border-brown"
+              className="rounded-md border border-border bg-white px-3 py-3 text-sm outline-none focus:border-brown"
               value={form.guestName}
               onChange={(e) => update("guestName", e.target.value)}
               required
             />
             <input
-              type="email"
-              placeholder="Email"
-              className="border border-border bg-white px-3 py-3 text-sm outline-none focus:border-brown"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              required
-            />
-            <input
               type="tel"
               placeholder="Phone"
-              className="border border-border bg-white px-3 py-3 text-sm outline-none focus:border-brown"
+              className="rounded-md border border-border bg-white px-3 py-3 text-sm outline-none focus:border-brown"
               value={form.phone}
               onChange={(e) => update("phone", e.target.value)}
               required

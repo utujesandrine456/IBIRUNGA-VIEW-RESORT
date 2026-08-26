@@ -1,40 +1,123 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  'https://ibirunga-view-resort.onrender.com/api';
+
+const TOKEN_KEY = 'ibirunga_admin_token';
+const ADMIN_KEY = 'ibirunga_admin_user';
+
+export type AdminUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  role?: 'admin';
+};
+
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
 
 export function getToken(): string | null {
   if (typeof window === 'undefined') return null;
-  return localStorage.getItem('ibirunga_admin_token');
+  return localStorage.getItem(TOKEN_KEY);
 }
 
 export function setToken(token: string) {
-  localStorage.setItem('ibirunga_admin_token', token);
+  localStorage.setItem(TOKEN_KEY, token);
 }
 
 export function clearToken() {
-  localStorage.removeItem('ibirunga_admin_token');
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ADMIN_KEY);
 }
+
+export function getStoredAdmin(): AdminUser | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(ADMIN_KEY);
+    return raw ? (JSON.parse(raw) as AdminUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredAdmin(admin: AdminUser) {
+  localStorage.setItem(ADMIN_KEY, JSON.stringify(admin));
+}
+
+function redirectToLogin() {
+  if (typeof window === 'undefined') return;
+  clearToken();
+  if (!window.location.pathname.startsWith('/admin/login')) {
+    window.location.assign('/admin/login');
+  }
+}
+
+type RequestOpts = RequestInit & {
+  /** When true, 401 does not force a hard redirect (caller handles it). */
+  softAuth?: boolean;
+};
 
 async function request<T>(
   path: string,
-  options: RequestInit = {},
+  options: RequestOpts = {},
   auth = false,
 ): Promise<T> {
+  const { softAuth = false, ...fetchOptions } = options;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(options.headers as Record<string, string>),
+    ...(fetchOptions.headers as Record<string, string>),
   };
 
   if (auth) {
     const token = getToken();
-    if (token) headers.Authorization = `Bearer ${token}`;
+    if (!token) {
+      if (!softAuth) redirectToLogin();
+      throw new ApiError('Authentication required. Please sign in again.', 401);
+    }
+    headers.Authorization = `Bearer ${token}`;
   }
 
   let res: Response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
   try {
-    res = await fetch(`${API_URL}${path}`, { ...options, headers });
-  } catch {
-    throw new Error(
-      `Cannot reach the CMS API at ${API_URL}. Start the backend with "npm run start:dev" in ibirunga-backend.`,
+    res = await fetch(`${API_URL}${path}`, {
+      ...fetchOptions,
+      headers,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new ApiError(
+        `Request timed out contacting ${API_URL}.`,
+        408,
+      );
+    }
+    throw new ApiError(
+      `Cannot reach the CMS API at ${API_URL}.`,
+      0,
     );
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  if (res.status === 401) {
+    const err = await res.json().catch(() => ({ message: 'Authentication required' }));
+    const message = Array.isArray(err.message)
+      ? err.message.join(', ')
+      : err.message || 'Authentication required. Please sign in again.';
+    if (!softAuth) redirectToLogin();
+    throw new ApiError(message, 401);
+  }
+
+  if (res.status === 429) {
+    throw new ApiError('Too many requests. Please wait a moment and try again.', 429);
   }
 
   if (!res.ok) {
@@ -42,7 +125,7 @@ async function request<T>(
     const message = Array.isArray(err.message)
       ? err.message.join(', ')
       : err.message ?? res.statusText;
-    throw new Error(message || 'Request failed');
+    throw new ApiError(message || 'Request failed', res.status);
   }
 
   if (res.status === 204) return undefined as T;
@@ -51,10 +134,14 @@ async function request<T>(
 
 export const api = {
   login: (email: string, password: string) =>
-    request<{ accessToken: string; admin: { email: string; name: string | null } }>(
-      '/auth/login',
-      { method: 'POST', body: JSON.stringify({ email, password }) },
-    ),
+    request<{
+      accessToken: string;
+      admin: AdminUser;
+      tokenType?: string;
+      expiresIn?: string;
+    }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+
+  me: () => request<AdminUser>('/auth/me', { softAuth: true }, true),
 
   getContent: () => request<import('./cms-types').CmsContent>('/content'),
 
@@ -70,7 +157,7 @@ export const api = {
           status: string;
           date: string;
         }>;
-      }>('/admin/dashboard', {}, true),
+      }>('/admin/dashboard', { softAuth: true }, true),
     getSite: () => request<import('./cms-types').SiteSettings>('/admin/site', {}, true),
     updateSite: (data: import('./cms-types').SiteSettings) =>
       request('/admin/site', { method: 'PUT', body: JSON.stringify(data) }, true),
@@ -110,22 +197,24 @@ export const api = {
     roomType?: string;
     roomCount?: number;
     guestName: string;
-    email: string;
+    email?: string;
     phone: string;
     specialRequests?: string;
     source?: string;
   }) => request('/bookings', { method: 'POST', body: JSON.stringify(data) }),
 
-  getMyBookings: (email: string) =>
-    request<Array<{
-      id: string;
-      guestName: string;
-      checkIn: string;
-      checkOut: string;
-      roomType: string | null;
-      adults: number;
-      children: number;
-      status: string;
-      createdAt: string;
-    }>>(`/bookings/my?email=${encodeURIComponent(email)}`),
+  getMyBookings: (phone: string) =>
+    request<
+      Array<{
+        id: string;
+        guestName: string;
+        checkIn: string;
+        checkOut: string;
+        roomType: string | null;
+        adults: number;
+        children: number;
+        status: string;
+        createdAt: string;
+      }>
+    >(`/bookings/my?phone=${encodeURIComponent(phone)}`),
 };

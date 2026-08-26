@@ -60,6 +60,58 @@ input,
 select,
 textarea {
   font-family: inherit;
+  accent-color: var(--brown);
+  caret-color: var(--brown);
+}
+
+button,
+[role="button"],
+a,
+select,
+input[type="submit"],
+input[type="button"],
+label {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.75;
+  filter: invert(28%) sepia(28%) saturate(1200%) hue-rotate(350deg) brightness(90%);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Remove browser autofill blue/yellow backgrounds */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #2c2c2c !important;
+  caret-color: var(--brown);
+  transition: background-color 99999s ease-out 0s;
 }
 
 ::selection {

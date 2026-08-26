@@ -24,7 +24,7 @@ export default function AdminTestimonialsPage() {
           { name: "name", label: "Name" },
           { name: "role", label: "Role" },
           { name: "text", label: "Review text", type: "textarea" },
-          { name: "image", label: "Image path" },
+          { name: "image", label: "Image", type: "image" },
           { name: "sortOrder", label: "Sort order", type: "number" },
           { name: "published", label: "Published", type: "checkbox" },
         ]}

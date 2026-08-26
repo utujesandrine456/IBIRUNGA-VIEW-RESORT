@@ -11,18 +11,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginDto = void 0;
 const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
 class LoginDto {
     email;
     password;
 }
 exports.LoginDto = LoginDto;
 __decorate([
+    (0, class_transformer_1.Transform)(({ value }) => typeof value === 'string' ? value.trim().toLowerCase() : value),
     (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.MaxLength)(255),
     __metadata("design:type", String)
 ], LoginDto.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(6),
+    (0, class_validator_1.MaxLength)(128),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);
 //# sourceMappingURL=login.dto.js.map

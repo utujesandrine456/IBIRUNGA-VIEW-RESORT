@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Throttle } from '@nestjs/throttler';
+import { AdminAuthGuard, JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './create-booking.dto';
 
@@ -7,19 +8,23 @@ import { CreateBookingDto } from './create-booking.dto';
 export class PublicBookingsController {
   constructor(private bookings: BookingsService) {}
 
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post()
   create(@Body() body: CreateBookingDto) {
     return this.bookings.create(body);
   }
 
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @Get('my')
-  findByEmail(@Query('email') email: string) {
-    return this.bookings.findByEmail(email);
+  findMine(@Query('phone') phone?: string, @Query('email') email?: string) {
+    if (phone?.trim()) return this.bookings.findByPhone(phone);
+    if (email?.trim()) return this.bookings.findByEmail(email);
+    return [];
   }
 }
 
 @Controller('admin/bookings')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, AdminAuthGuard)
 export class AdminBookingsController {
   constructor(private bookings: BookingsService) {}
 

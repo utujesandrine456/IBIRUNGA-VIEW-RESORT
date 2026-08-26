@@ -11,7 +11,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingsService = void 0;
 const common_1 = require("@nestjs/common");
+const client_1 = require("@prisma/client");
 const prisma_service_1 = require("../prisma/prisma.service");
+function phoneDigits(value) {
+    return (value ?? '').replace(/\D/g, '');
+}
+const myBookingSelect = {
+    id: true,
+    guestName: true,
+    checkIn: true,
+    checkOut: true,
+    roomType: true,
+    adults: true,
+    children: true,
+    status: true,
+    createdAt: true,
+};
 let BookingsService = class BookingsService {
     prisma;
     constructor(prisma) {
@@ -27,8 +42,8 @@ let BookingsService = class BookingsService {
                 roomType: data.roomType,
                 roomCount: data.roomCount ?? 1,
                 guestName: data.guestName,
-                email: data.email,
-                phone: data.phone,
+                email: (data.email ?? '').trim().toLowerCase(),
+                phone: data.phone.trim(),
                 specialRequests: data.specialRequests,
                 source: data.source ?? 'website',
             },
@@ -58,18 +73,32 @@ let BookingsService = class BookingsService {
         return this.prisma.booking.findMany({
             where: { email: email.toLowerCase() },
             orderBy: { createdAt: 'desc' },
-            select: {
-                id: true,
-                guestName: true,
-                checkIn: true,
-                checkOut: true,
-                roomType: true,
-                adults: true,
-                children: true,
-                status: true,
-                createdAt: true,
-            },
+            select: myBookingSelect,
         });
+    }
+    async findByPhone(phone) {
+        const digits = phoneDigits(phone);
+        if (digits.length < 9)
+            return [];
+        const tail = digits.slice(-9);
+        const rows = await this.prisma.$queryRaw(client_1.Prisma.sql `
+      SELECT
+        id,
+        "guestName",
+        "checkIn",
+        "checkOut",
+        "roomType",
+        adults,
+        children,
+        status,
+        "createdAt"
+      FROM "Booking"
+      WHERE
+        regexp_replace(phone, '[^0-9]', '', 'g') = ${digits}
+        OR regexp_replace(phone, '[^0-9]', '', 'g') LIKE ${'%' + tail}
+      ORDER BY "createdAt" DESC
+    `);
+        return rows;
     }
     stats() {
         return this.prisma.booking.groupBy({

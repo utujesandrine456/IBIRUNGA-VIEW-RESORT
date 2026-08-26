@@ -25,7 +25,7 @@ type Toast = {
   type: "approved" | "rejected";
 };
 
-const STORAGE_KEY = "ibirunga_booking_email";
+const STORAGE_KEY = "ibirunga_booking_phone";
 const SEEN_KEY = "ibirunga_seen_statuses";
 
 function statusStyle(status: string) {
@@ -42,8 +42,8 @@ function fmt(dateStr: string) {
 
 export function BookingNotifications() {
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [inputEmail, setInputEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [inputPhone, setInputPhone] = useState("");
   const [bookings, setBookings] = useState<MyBooking[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -86,37 +86,37 @@ export function BookingNotifications() {
     }
   }, []);
 
-  const fetchBookings = useCallback(async (addr: string, silent = false) => {
-    if (!addr) return;
+  const fetchBookings = useCallback(async (number: string, silent = false) => {
+    if (!number) return;
     if (!silent) setLoading(true);
     setError("");
     try {
-      const data = await api.getMyBookings(addr);
+      const data = await api.getMyBookings(number);
       setBookings(data);
       checkNewStatuses(data);
     } catch {
-      if (!silent) setError("Could not load bookings. Check your email and try again.");
+      if (!silent) setError("Could not load bookings. Check your phone number and try again.");
     } finally {
       if (!silent) setLoading(false);
     }
   }, [checkNewStatuses]);
 
-  // Restore saved email on mount
+  // Restore saved phone on mount
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      setEmail(saved);
-      setInputEmail(saved);
+      setPhone(saved);
+      setInputPhone(saved);
       fetchBookings(saved, true);
     }
   }, [fetchBookings]);
 
-  // Poll every 30s when email is set
+  // Poll every 30s when phone is set
   useEffect(() => {
-    if (!email) return;
-    pollRef.current = setInterval(() => fetchBookings(email, true), 30_000);
+    if (!phone) return;
+    pollRef.current = setInterval(() => fetchBookings(phone, true), 30_000);
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
-  }, [email, fetchBookings]);
+  }, [phone, fetchBookings]);
 
   // Close panel on outside click
   useEffect(() => {
@@ -131,16 +131,16 @@ export function BookingNotifications() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const addr = inputEmail.trim().toLowerCase();
-    if (!addr) return;
-    setEmail(addr);
-    localStorage.setItem(STORAGE_KEY, addr);
-    await fetchBookings(addr);
+    const number = inputPhone.trim();
+    if (!number) return;
+    setPhone(number);
+    localStorage.setItem(STORAGE_KEY, number);
+    await fetchBookings(number);
   }
 
   function handleClear() {
-    setEmail("");
-    setInputEmail("");
+    setPhone("");
+    setInputPhone("");
     setBookings([]);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(SEEN_KEY);
@@ -155,7 +155,7 @@ export function BookingNotifications() {
   return (
     <>
       {/* Toast stack */}
-      <div className="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none">
+      <div className="fixed bottom-6 right-6 z-200 flex flex-col gap-3 pointer-events-none">
         <AnimatePresence>
           {toasts.map((t) => (
             <motion.div
@@ -197,7 +197,7 @@ export function BookingNotifications() {
           aria-label="My booking status"
           whileTap={{ scale: 0.92 }}
         >
-          <BellIcon className="h-[18px] w-[18px]" />
+          <BellIcon className="h-4.5 w-4.5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#c19a6b] text-[9px] font-bold text-white">
               {unreadCount}
@@ -225,24 +225,24 @@ export function BookingNotifications() {
                 </button>
               </div>
 
-              {/* Email form */}
-              {!email ? (
+              {/* Phone lookup form */}
+              {!phone ? (
                 <form onSubmit={handleSubmit} className="px-4 py-4 space-y-3">
                   <p className="text-xs text-white/60 leading-relaxed">
-                    Enter the email you used when booking to check your reservation status.
+                    Enter the phone number you used when booking to check your reservation status.
                   </p>
                   <input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={inputEmail}
-                    onChange={(e) => setInputEmail(e.target.value)}
+                    type="tel"
+                    placeholder="+250 ..."
+                    value={inputPhone}
+                    onChange={(e) => setInputPhone(e.target.value)}
                     required
-                    className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-[#c19a6b] transition-colors"
+                    className="w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-[#c19a6b] transition-colors"
                   />
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-lg bg-[#c19a6b] py-2 text-sm font-semibold text-white hover:bg-[#a8834f] transition-colors disabled:opacity-60"
+                    className="w-full rounded-md bg-[#c19a6b] py-2 text-sm font-semibold text-white hover:bg-[#a8834f] transition-colors disabled:opacity-60"
                   >
                     {loading ? "Checking…" : "Check Status"}
                   </button>
@@ -252,7 +252,7 @@ export function BookingNotifications() {
                 <div>
                   {/* Logged-in state header */}
                   <div className="flex items-center justify-between px-4 pt-3 pb-2">
-                    <span className="truncate text-xs text-white/50">{email}</span>
+                    <span className="truncate text-xs text-white/50">{phone}</span>
                     <button
                       onClick={handleClear}
                       className="text-xs text-[#c19a6b] hover:text-[#d4aa7d] transition-colors"
@@ -268,7 +268,7 @@ export function BookingNotifications() {
                     )}
                     {!loading && bookings.length === 0 && (
                       <div className="py-6 text-center text-xs text-white/40">
-                        No bookings found for this email.
+                        No bookings found for this phone number.
                       </div>
                     )}
                     {!loading && bookings.map((b) => {
@@ -305,7 +305,7 @@ export function BookingNotifications() {
                   {/* Refresh */}
                   <div className="border-t border-white/10 px-4 py-2">
                     <button
-                      onClick={() => fetchBookings(email)}
+                      onClick={() => fetchBookings(phone)}
                       disabled={loading}
                       className="w-full text-center text-xs text-white/40 hover:text-white/70 transition-colors disabled:opacity-40"
                     >

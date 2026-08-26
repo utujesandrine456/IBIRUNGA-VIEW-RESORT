@@ -5,9 +5,6 @@ export declare class PublicBookingsController {
     constructor(bookings: BookingsService);
     create(body: CreateBookingDto): import(".prisma/client").Prisma.Prisma__BookingClient<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -15,21 +12,24 @@ export declare class PublicBookingsController {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
-    findByEmail(email: string): never[] | import(".prisma/client").Prisma.PrismaPromise<{
+    findMine(phone?: string, email?: string): never[] | Promise<{
         id: string;
-        createdAt: Date;
+        guestName: string;
         checkIn: Date;
         checkOut: Date;
+        roomType: string | null;
         adults: number;
         children: number;
-        roomType: string | null;
-        guestName: string;
         status: string;
+        createdAt: Date;
     }[]>;
 }
 export declare class AdminBookingsController {
@@ -37,9 +37,6 @@ export declare class AdminBookingsController {
     constructor(bookings: BookingsService);
     findAll(status?: string): import(".prisma/client").Prisma.PrismaPromise<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -47,9 +44,12 @@ export declare class AdminBookingsController {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }[]>;
     stats(): import(".prisma/client").Prisma.GetBookingGroupByPayload<{
@@ -60,9 +60,6 @@ export declare class AdminBookingsController {
     }>;
     findOne(id: string): Promise<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -70,16 +67,16 @@ export declare class AdminBookingsController {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }>;
     updateStatus(id: string, status: string): import(".prisma/client").Prisma.Prisma__BookingClient<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -87,16 +84,16 @@ export declare class AdminBookingsController {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__BookingClient<{
         id: string;
-        email: string;
-        createdAt: Date;
-        phone: string;
         checkIn: Date;
         checkOut: Date;
         adults: number;
@@ -104,9 +101,12 @@ export declare class AdminBookingsController {
         roomType: string | null;
         roomCount: number;
         guestName: string;
+        email: string;
+        phone: string;
         specialRequests: string | null;
         status: string;
         source: string;
+        createdAt: Date;
         updatedAt: Date;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
 }

@@ -5,23 +5,32 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
+import { AdminAuthGuard, JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
   imports: [
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_SECRET') ?? 'ibirunga-cms-secret',
-        signOptions: {
-          expiresIn: (config.get<string>('JWT_EXPIRES_IN') ?? '7d') as `${number}${'s' | 'm' | 'h' | 'd'}`,
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const secret = config.get<string>('JWT_SECRET');
+        if (!secret) {
+          throw new Error('JWT_SECRET environment variable is required');
+        }
+        return {
+          secret,
+          signOptions: {
+            expiresIn: (config.get<string>('JWT_EXPIRES_IN') ??
+              '7d') as `${number}${'s' | 'm' | 'h' | 'd'}`,
+            algorithm: 'HS256' as const,
+          },
+        };
+      },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard, AdminAuthGuard],
+  exports: [AuthService, JwtAuthGuard, AdminAuthGuard, PassportModule, JwtModule],
 })
 export class AuthModule {}

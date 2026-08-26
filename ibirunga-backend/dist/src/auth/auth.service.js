@@ -55,7 +55,10 @@ let AuthService = class AuthService {
         this.jwt = jwt;
     }
     async login(email, password) {
-        const admin = await this.prisma.admin.findUnique({ where: { email } });
+        const normalizedEmail = email.trim().toLowerCase();
+        const admin = await this.prisma.admin.findUnique({
+            where: { email: normalizedEmail },
+        });
         if (!admin) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
@@ -66,11 +69,29 @@ let AuthService = class AuthService {
         const token = this.jwt.sign({
             sub: admin.id,
             email: admin.email,
+            role: 'admin',
         });
         return {
             accessToken: token,
-            admin: { id: admin.id, email: admin.email, name: admin.name },
+            tokenType: 'Bearer',
+            expiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
+            admin: {
+                id: admin.id,
+                email: admin.email,
+                name: admin.name,
+                role: 'admin',
+            },
         };
+    }
+    async me(adminId) {
+        const admin = await this.prisma.admin.findUnique({
+            where: { id: adminId },
+            select: { id: true, email: true, name: true },
+        });
+        if (!admin) {
+            throw new common_1.UnauthorizedException('Admin account not found or revoked.');
+        }
+        return { ...admin, role: 'admin' };
     }
 };
 exports.AuthService = AuthService;

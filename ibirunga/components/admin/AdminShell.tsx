@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { clearToken, getToken } from "@/lib/api";
+import { api, ApiError, clearToken, getStoredAdmin, getToken, setStoredAdmin } from "@/lib/api";
+import { toast } from "sonner";
 
 type NavItem = { href: string; label: string; icon: string };
 
@@ -19,7 +20,6 @@ const contentNav: NavItem[] = [
   { href: "/admin/about", label: "About", icon: "about" },
   { href: "/admin/amenities", label: "Amenities", icon: "amenities" },
   { href: "/admin/rooms", label: "Rooms", icon: "rooms" },
-  { href: "/admin/extra-services", label: "Extra Services", icon: "services" },
   { href: "/admin/testimonials", label: "Testimonials", icon: "testimonials" },
   { href: "/admin/blog", label: "Blog", icon: "blog" },
   { href: "/admin/video", label: "Video Tour", icon: "video" },
@@ -181,17 +181,66 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [ready, setReady] = useState(false);
+  const [adminEmail, setAdminEmail] = useState("Admin");
 
   useEffect(() => {
     if (pathname === "/admin/login") {
       setReady(true);
       return;
     }
-    if (!getToken()) {
-      router.replace("/admin/login");
-      return;
+
+    let cancelled = false;
+
+    async function verifySession() {
+      const token = getToken();
+      if (!token) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      const cached = getStoredAdmin();
+      if (cached?.email) setAdminEmail(cached.email);
+
+      try {
+        const me = await api.me();
+        if (cancelled) return;
+        setStoredAdmin(me);
+        setAdminEmail(me.email);
+        setReady(true);
+        return;
+      } catch (err) {
+        if (cancelled) return;
+
+        // Only force logout on real auth failures
+        if (err instanceof ApiError && err.status === 401) {
+          clearToken();
+          router.replace("/admin/login");
+          return;
+        }
+
+        // /auth/me may be unavailable on older deploys — fall back to dashboard check
+        try {
+          await api.admin.dashboard();
+          if (cancelled) return;
+          setReady(true);
+          return;
+        } catch (dashErr) {
+          if (cancelled) return;
+          if (dashErr instanceof ApiError && dashErr.status === 401) {
+            clearToken();
+            router.replace("/admin/login");
+            return;
+          }
+          // Network / temporary API issues: keep session if we have a token
+          setReady(true);
+        }
+      }
     }
-    setReady(true);
+
+    verifySession();
+    return () => {
+      cancelled = true;
+    };
   }, [pathname, router]);
 
   if (pathname === "/admin/login") {
@@ -203,7 +252,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-screen items-center justify-center bg-[#f3efe8]">
         <div className="flex items-center gap-3 text-[#6b4423]">
           <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#6b4423]/20 border-t-[#6b4423]" />
-          Loading workspace...
+          Verifying session...
         </div>
       </div>
     );
@@ -241,12 +290,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <div className="space-y-3 border-t border-[#2a221c] p-4">
             <div className="rounded-md bg-[#2a221c] px-3.5 py-3">
               <p className="text-[11px] font-medium text-white/50">Signed in as</p>
-              <p className="mt-0.5 truncate text-sm font-semibold text-white">Admin</p>
+              <p className="mt-0.5 truncate text-sm font-semibold text-white">{adminEmail}</p>
             </div>
             <button
               type="button"
               onClick={() => {
                 clearToken();
+                toast.success("Signed out successfully");
                 router.push("/admin/login");
               }}
               className="flex w-full items-center justify-center gap-2 rounded-md border border-[#3a322c] bg-[#2a221c] px-3 py-2.5 text-sm font-medium text-white! transition hover:bg-[#6b4423]"
@@ -260,7 +310,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="relative flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 border-b border-[#e8e2d8] bg-[#faf8f4]/90 px-8 py-3.5 backdrop-blur-md">
             <div className="flex items-center justify-between">
               <div>
@@ -281,7 +331,17 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               </Link>
             </div>
           </header>
-          <main className="flex-1 px-8 py-8">{children}</main>
+          <main className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
+            <div
+              className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: "url(/LUCIMAGES_20.JPG)" }}
+              aria-hidden
+            />
+            <div className="pointer-events-none absolute inset-0 bg-[#f3efe8]/88" aria-hidden />
+            <div className="relative z-10 flex min-h-full w-full flex-1 justify-center px-4 py-6 md:px-8 md:py-8">
+              <div className="my-auto w-full max-w-5xl">{children}</div>
+            </div>
+          </main>
         </div>
       </div>
     </div>

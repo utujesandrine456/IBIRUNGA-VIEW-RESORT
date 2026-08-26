@@ -137,11 +137,11 @@ export async function getContent(): Promise<CmsContent> {
   const apiUrl =
     process.env.API_URL ??
     process.env.NEXT_PUBLIC_API_URL ??
-    'http://localhost:8000/api';
+    'https://ibirunga-view-resort.onrender.com/api';
 
   try {
     const res = await fetch(`${apiUrl}/content`, {
-      next: { revalidate: 60 },
+      cache: "no-store",
     });
     if (!res.ok) return staticFallback();
     return (await res.json()) as CmsContent;

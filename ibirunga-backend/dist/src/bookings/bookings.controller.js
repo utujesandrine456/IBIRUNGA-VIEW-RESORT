@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminBookingsController = exports.PublicBookingsController = void 0;
 const common_1 = require("@nestjs/common");
+const throttler_1 = require("@nestjs/throttler");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const bookings_service_1 = require("./bookings.service");
 const create_booking_dto_1 = require("./create-booking.dto");
@@ -25,12 +26,17 @@ let PublicBookingsController = class PublicBookingsController {
     create(body) {
         return this.bookings.create(body);
     }
-    findByEmail(email) {
-        return this.bookings.findByEmail(email);
+    findMine(phone, email) {
+        if (phone?.trim())
+            return this.bookings.findByPhone(phone);
+        if (email?.trim())
+            return this.bookings.findByEmail(email);
+        return [];
     }
 };
 exports.PublicBookingsController = PublicBookingsController;
 __decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 10, ttl: 60_000 } }),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -38,12 +44,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PublicBookingsController.prototype, "create", null);
 __decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 20, ttl: 60_000 } }),
     (0, common_1.Get)('my'),
-    __param(0, (0, common_1.Query)('email')),
+    __param(0, (0, common_1.Query)('phone')),
+    __param(1, (0, common_1.Query)('email')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
-], PublicBookingsController.prototype, "findByEmail", null);
+], PublicBookingsController.prototype, "findMine", null);
 exports.PublicBookingsController = PublicBookingsController = __decorate([
     (0, common_1.Controller)('bookings'),
     __metadata("design:paramtypes", [bookings_service_1.BookingsService])
@@ -107,7 +115,7 @@ __decorate([
 ], AdminBookingsController.prototype, "remove", null);
 exports.AdminBookingsController = AdminBookingsController = __decorate([
     (0, common_1.Controller)('admin/bookings'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, jwt_auth_guard_1.AdminAuthGuard),
     __metadata("design:paramtypes", [bookings_service_1.BookingsService])
 ], AdminBookingsController);
 //# sourceMappingURL=bookings.controller.js.map

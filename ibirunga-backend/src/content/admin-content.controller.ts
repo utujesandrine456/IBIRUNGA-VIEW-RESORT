@@ -9,12 +9,12 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminAuthGuard, JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BookingsService } from '../bookings/bookings.service';
 import { ContentService } from './content.service';
 
 @Controller('admin')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, AdminAuthGuard)
 export class AdminContentController {
   constructor(
     private content: ContentService,

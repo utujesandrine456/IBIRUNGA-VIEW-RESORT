@@ -6,7 +6,7 @@ export declare class CreateBookingDto {
     roomType?: string;
     roomCount?: number;
     guestName: string;
-    email: string;
+    email?: string;
     phone: string;
     specialRequests?: string;
     source?: string;

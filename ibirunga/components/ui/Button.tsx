@@ -8,7 +8,7 @@ const variants: Record<Variant, string> = {
   outline:
     "bg-transparent text-brown border border-brown hover:bg-brown hover:text-white!",
   outlineLight:
-    "bg-transparent text-white! border border-white hover:bg-white hover:text-brown",
+    "bg-transparent text-white! border-2 border-white hover:bg-white hover:text-[#6b4423]!",
   ghost: "bg-transparent text-brown hover:text-brown-dark px-0",
 };
 
@@ -27,7 +27,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center gap-2 px-7 py-3.5 text-[13px] font-semibold tracking-[0.14em] uppercase transition-colors duration-300 cursor-pointer ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md px-7 py-3.5 text-[13px] font-semibold tracking-[0.14em] uppercase transition-colors duration-300 cursor-pointer ${variants[variant]} ${className}`}
       {...props}
     >
       {children}

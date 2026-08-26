@@ -383,7 +383,7 @@ __decorate([
 ], AdminContentController.prototype, "deleteFooterService", null);
 exports.AdminContentController = AdminContentController = __decorate([
     (0, common_1.Controller)('admin'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, jwt_auth_guard_1.AdminAuthGuard),
     __metadata("design:paramtypes", [content_service_1.ContentService,
         bookings_service_1.BookingsService])
 ], AdminContentController);

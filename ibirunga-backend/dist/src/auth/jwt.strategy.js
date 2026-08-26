@@ -14,21 +14,48 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
 const config_1 = require("@nestjs/config");
+const prisma_service_1 = require("../prisma/prisma.service");
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    constructor(config) {
+    prisma;
+    constructor(config, prisma) {
+        const secret = config.get('JWT_SECRET');
+        if (!secret) {
+            throw new Error('JWT_SECRET environment variable is required');
+        }
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: config.get('JWT_SECRET') ?? 'ibirunga-cms-secret',
+            secretOrKey: secret,
+            algorithms: ['HS256'],
         });
+        this.prisma = prisma;
     }
-    validate(payload) {
-        return { id: payload.sub, email: payload.email };
+    async validate(payload) {
+        if (!payload?.sub || !payload?.email) {
+            throw new common_1.UnauthorizedException('Invalid authentication token.');
+        }
+        if (payload.role && payload.role !== 'admin') {
+            throw new common_1.UnauthorizedException('Invalid admin token.');
+        }
+        const admin = await this.prisma.admin.findUnique({
+            where: { id: payload.sub },
+            select: { id: true, email: true, name: true },
+        });
+        if (!admin || admin.email !== payload.email) {
+            throw new common_1.UnauthorizedException('Admin account not found or revoked.');
+        }
+        return {
+            id: admin.id,
+            email: admin.email,
+            name: admin.name,
+            role: 'admin',
+        };
     }
 };
 exports.JwtStrategy = JwtStrategy;
 exports.JwtStrategy = JwtStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService])
+    __metadata("design:paramtypes", [config_1.ConfigService,
+        prisma_service_1.PrismaService])
 ], JwtStrategy);
 //# sourceMappingURL=jwt.strategy.js.map
