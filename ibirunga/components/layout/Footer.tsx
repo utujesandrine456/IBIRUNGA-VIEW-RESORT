@@ -22,7 +22,7 @@ const socialLinks = [
 ] as const;
 
 export function Footer() {
-  const { site, navLinks, footerServices, footer } = useCmsContent();
+  const { site, navLinks, amenities, footer } = useCmsContent();
   return (
     <footer className="relative mt-16 overflow-hidden bg-footer text-white md:mt-20">
       <ImigongoFooterArt className="pointer-events-none absolute inset-0" />
@@ -70,8 +70,8 @@ export function Footer() {
         <MotionItem variants={fadeInUp}>
           <h4 className="mb-5 text-lg font-bold">Services</h4>
           <ul className="space-y-2.5 text-sm text-white/70">
-            {footerServices.map((service) => (
-              <li key={service}>{service}</li>
+            {amenities.map((item) => (
+              <li key={item.id ?? item.title}>{item.title}</li>
             ))}
           </ul>
         </MotionItem>

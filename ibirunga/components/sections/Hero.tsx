@@ -17,6 +17,7 @@ import { useCmsContent } from "@/components/providers/ContentProvider";
 import { usePromoBanner } from "@/components/layout/PromoBanner";
 import { api } from "@/lib/api";
 import { ROOM_BOOKING_OPTIONS } from "@/lib/room-options";
+import { normalizePhoneInput } from "@/lib/phone";
 
 const fieldControl =
   "w-full cursor-pointer rounded-md border border-[#e6e1d8] bg-[#faf9f7] px-3 py-2.5 text-[15px] text-[#2c2c2c] outline-none transition placeholder:text-[#a8a29a] focus:border-brown focus:bg-white focus:ring-2 focus:ring-brown/15";
@@ -137,9 +138,13 @@ export function Hero() {
         children: Number(form.children),
         roomType: form.roomType,
         guestName: form.guestName.trim(),
-        phone: form.phone.trim(),
+        phone: normalizePhoneInput(form.phone),
         source: "hero-form",
       });
+      const savedPhone = normalizePhoneInput(form.phone);
+      if (savedPhone) {
+        localStorage.setItem("ibirunga_booking_phone", savedPhone);
+      }
       setStatus("success");
       setMessage("Request sent. We will confirm availability shortly.");
       setForm({

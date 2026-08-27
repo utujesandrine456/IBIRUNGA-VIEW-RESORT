@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -6,6 +6,18 @@ import { PrismaService } from '../prisma/prisma.service';
 function phoneDigits(value: string) {
   return (value ?? '').replace(/\D/g, '');
 }
+
+function phonesMatch(a: string, b: string) {
+  const da = phoneDigits(a);
+  const db = phoneDigits(b);
+  if (!da || !db) return false;
+  if (da === db) return true;
+  const tail = Math.min(9, da.length, db.length);
+  return da.slice(-tail) === db.slice(-tail);
+}
+
+const ADMIN_STATUSES = new Set(['pending', 'confirmed', 'rejected', 'cancelled']);
+
 
 const myBookingSelect = {
   id: true,
@@ -66,8 +78,34 @@ export class BookingsService {
     return booking;
   }
 
-  updateStatus(id: string, status: string) {
-    return this.prisma.booking.update({ where: { id }, data: { status } });
+  async updateStatus(id: string, status: string) {
+    const next = status.trim().toLowerCase();
+    if (!ADMIN_STATUSES.has(next)) {
+      throw new BadRequestException(
+        'Invalid status. Use pending, confirmed, rejected, or cancelled.',
+      );
+    }
+    await this.findOne(id);
+    return this.prisma.booking.update({ where: { id }, data: { status: next } });
+  }
+
+  /**
+   * Guest cancels their own pending booking (verified by phone).
+   * Admin decline uses status "rejected" instead.
+   */
+  async cancelByGuest(id: string, phone: string) {
+    const booking = await this.findOne(id);
+    if (!phonesMatch(booking.phone, phone)) {
+      throw new BadRequestException('Phone number does not match this booking.');
+    }
+    if (booking.status.toLowerCase() !== 'pending') {
+      throw new BadRequestException('Only pending bookings can be cancelled.');
+    }
+    return this.prisma.booking.update({
+      where: { id },
+      data: { status: 'cancelled' },
+      select: myBookingSelect,
+    });
   }
 
   delete(id: string) {
@@ -93,38 +131,53 @@ export class BookingsService {
 
     const tail = digits.slice(-9);
 
-    // Postgres: strip non-digits then match full or last-9
-    const rows = await this.prisma.$queryRaw<
-      Array<{
-        id: string;
-        guestName: string;
-        checkIn: Date;
-        checkOut: Date;
-        roomType: string | null;
-        adults: number;
-        children: number;
-        status: string;
-        createdAt: Date;
-      }>
-    >(Prisma.sql`
-      SELECT
-        id,
-        "guestName",
-        "checkIn",
-        "checkOut",
-        "roomType",
-        adults,
-        children,
-        status,
-        "createdAt"
-      FROM "Booking"
-      WHERE
-        regexp_replace(phone, '[^0-9]', '', 'g') = ${digits}
-        OR regexp_replace(phone, '[^0-9]', '', 'g') LIKE ${'%' + tail}
-      ORDER BY "createdAt" DESC
-    `);
+    try {
+      const rows = await this.prisma.$queryRaw<
+        Array<{
+          id: string;
+          guestName: string;
+          checkIn: Date;
+          checkOut: Date;
+          roomType: string | null;
+          adults: number;
+          children: number;
+          status: string;
+          createdAt: Date;
+        }>
+      >(Prisma.sql`
+        SELECT
+          id,
+          "guestName",
+          "checkIn",
+          "checkOut",
+          "roomType",
+          adults,
+          children,
+          status,
+          "createdAt"
+        FROM "Booking"
+        WHERE
+          regexp_replace(phone, '[^0-9]', '', 'g') = ${digits}
+          OR regexp_replace(phone, '[^0-9]', '', 'g') LIKE ${'%' + tail}
+        ORDER BY "createdAt" DESC
+      `);
 
-    return rows;
+      if (rows.length > 0) return rows;
+    } catch {
+      /* fall through to Prisma filter */
+    }
+
+    const all = await this.prisma.booking.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: { ...myBookingSelect, phone: true },
+    });
+
+    return all
+      .filter((b) => {
+        const stored = phoneDigits(b.phone);
+        return stored === digits || stored.endsWith(tail);
+      })
+      .map(({ phone: _phone, ...rest }) => rest);
   }
 
   stats() {

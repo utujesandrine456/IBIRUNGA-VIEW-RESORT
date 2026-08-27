@@ -27,15 +27,23 @@ const socialLinks = [
 function LogoMark() {
   const { site } = useCmsContent();
   const src = site?.logoUrl || "/logo.png";
+  const isCustom = !!site?.logoUrl && site.logoUrl !== "/logo.png";
+
   return (
-    <CmsImage
-      src={src}
-      alt="Ibirunga View Resort logo"
-      width={52}
-      height={52}
-      className="h-11 w-11 shrink-0 object-contain brightness-0 invert sm:h-12 sm:w-12"
-      priority
-    />
+    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/95 sm:h-12 sm:w-12">
+      <CmsImage
+        src={src}
+        alt="Ibirunga View Resort logo"
+        width={52}
+        height={52}
+        className={
+          isCustom
+            ? "h-full w-full object-cover"
+            : "h-9 w-9 object-contain sm:h-10 sm:w-10"
+        }
+        priority
+      />
+    </span>
   );
 }
 
