@@ -16,6 +16,17 @@ const prisma_service_1 = require("../prisma/prisma.service");
 function phoneDigits(value) {
     return (value ?? '').replace(/\D/g, '');
 }
+function phonesMatch(a, b) {
+    const da = phoneDigits(a);
+    const db = phoneDigits(b);
+    if (!da || !db)
+        return false;
+    if (da === db)
+        return true;
+    const tail = Math.min(9, da.length, db.length);
+    return da.slice(-tail) === db.slice(-tail);
+}
+const ADMIN_STATUSES = new Set(['pending', 'confirmed', 'rejected', 'cancelled']);
 const myBookingSelect = {
     id: true,
     guestName: true,
@@ -61,8 +72,27 @@ let BookingsService = class BookingsService {
             throw new common_1.NotFoundException('Booking not found');
         return booking;
     }
-    updateStatus(id, status) {
-        return this.prisma.booking.update({ where: { id }, data: { status } });
+    async updateStatus(id, status) {
+        const next = status.trim().toLowerCase();
+        if (!ADMIN_STATUSES.has(next)) {
+            throw new common_1.BadRequestException('Invalid status. Use pending, confirmed, rejected, or cancelled.');
+        }
+        await this.findOne(id);
+        return this.prisma.booking.update({ where: { id }, data: { status: next } });
+    }
+    async cancelByGuest(id, phone) {
+        const booking = await this.findOne(id);
+        if (!phonesMatch(booking.phone, phone)) {
+            throw new common_1.BadRequestException('Phone number does not match this booking.');
+        }
+        if (booking.status.toLowerCase() !== 'pending') {
+            throw new common_1.BadRequestException('Only pending bookings can be cancelled.');
+        }
+        return this.prisma.booking.update({
+            where: { id },
+            data: { status: 'cancelled' },
+            select: myBookingSelect,
+        });
     }
     delete(id) {
         return this.prisma.booking.delete({ where: { id } });
@@ -81,24 +111,39 @@ let BookingsService = class BookingsService {
         if (digits.length < 9)
             return [];
         const tail = digits.slice(-9);
-        const rows = await this.prisma.$queryRaw(client_1.Prisma.sql `
-      SELECT
-        id,
-        "guestName",
-        "checkIn",
-        "checkOut",
-        "roomType",
-        adults,
-        children,
-        status,
-        "createdAt"
-      FROM "Booking"
-      WHERE
-        regexp_replace(phone, '[^0-9]', '', 'g') = ${digits}
-        OR regexp_replace(phone, '[^0-9]', '', 'g') LIKE ${'%' + tail}
-      ORDER BY "createdAt" DESC
-    `);
-        return rows;
+        try {
+            const rows = await this.prisma.$queryRaw(client_1.Prisma.sql `
+        SELECT
+          id,
+          "guestName",
+          "checkIn",
+          "checkOut",
+          "roomType",
+          adults,
+          children,
+          status,
+          "createdAt"
+        FROM "Booking"
+        WHERE
+          regexp_replace(phone, '[^0-9]', '', 'g') = ${digits}
+          OR regexp_replace(phone, '[^0-9]', '', 'g') LIKE ${'%' + tail}
+        ORDER BY "createdAt" DESC
+      `);
+            if (rows.length > 0)
+                return rows;
+        }
+        catch {
+        }
+        const all = await this.prisma.booking.findMany({
+            orderBy: { createdAt: 'desc' },
+            select: { ...myBookingSelect, phone: true },
+        });
+        return all
+            .filter((b) => {
+            const stored = phoneDigits(b.phone);
+            return stored === digits || stored.endsWith(tail);
+        })
+            .map(({ phone: _phone, ...rest }) => rest);
     }
     stats() {
         return this.prisma.booking.groupBy({

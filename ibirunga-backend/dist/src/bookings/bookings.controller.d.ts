@@ -31,6 +31,17 @@ export declare class PublicBookingsController {
         status: string;
         createdAt: Date;
     }[]>;
+    cancelMine(id: string, phone?: string): Promise<{
+        id: string;
+        checkIn: Date;
+        checkOut: Date;
+        adults: number;
+        children: number;
+        roomType: string | null;
+        guestName: string;
+        status: string;
+        createdAt: Date;
+    }>;
 }
 export declare class AdminBookingsController {
     private bookings;
@@ -75,7 +86,7 @@ export declare class AdminBookingsController {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    updateStatus(id: string, status: string): import(".prisma/client").Prisma.Prisma__BookingClient<{
+    updateStatus(id: string, status: string): Promise<{
         id: string;
         checkIn: Date;
         checkOut: Date;
@@ -91,7 +102,7 @@ export declare class AdminBookingsController {
         source: string;
         createdAt: Date;
         updatedAt: Date;
-    }, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    }>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__BookingClient<{
         id: string;
         checkIn: Date;

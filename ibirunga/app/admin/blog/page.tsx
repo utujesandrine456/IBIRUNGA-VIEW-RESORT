@@ -2,7 +2,7 @@ import { CrudResourcePage, SectionEditorPage } from "@/components/admin/CrudPage
 
 export default function AdminBlogPage() {
   return (
-    <div className="space-y-10">
+    <div className="flex w-full flex-1 flex-col gap-8">
       <SectionEditorPage
         title="Blog Section Header"
         description="Eyebrow, title, and intro for the blog section."

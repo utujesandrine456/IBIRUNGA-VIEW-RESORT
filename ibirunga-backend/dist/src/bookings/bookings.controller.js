@@ -33,6 +33,12 @@ let PublicBookingsController = class PublicBookingsController {
             return this.bookings.findByEmail(email);
         return [];
     }
+    cancelMine(id, phone) {
+        if (!phone?.trim()) {
+            throw new common_1.BadRequestException('Phone number is required to cancel a booking.');
+        }
+        return this.bookings.cancelByGuest(id, phone);
+    }
 };
 exports.PublicBookingsController = PublicBookingsController;
 __decorate([
@@ -52,6 +58,15 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], PublicBookingsController.prototype, "findMine", null);
+__decorate([
+    (0, throttler_1.Throttle)({ default: { limit: 10, ttl: 60_000 } }),
+    (0, common_1.Patch)(':id/cancel'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('phone')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], PublicBookingsController.prototype, "cancelMine", null);
 exports.PublicBookingsController = PublicBookingsController = __decorate([
     (0, common_1.Controller)('bookings'),
     __metadata("design:paramtypes", [bookings_service_1.BookingsService])

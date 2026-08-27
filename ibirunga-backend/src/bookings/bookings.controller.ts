@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { AdminAuthGuard, JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BookingsService } from './bookings.service';
@@ -20,6 +31,16 @@ export class PublicBookingsController {
     if (phone?.trim()) return this.bookings.findByPhone(phone);
     if (email?.trim()) return this.bookings.findByEmail(email);
     return [];
+  }
+
+  /** Guest cancels a pending booking they own (phone must match). */
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Patch(':id/cancel')
+  cancelMine(@Param('id') id: string, @Body('phone') phone?: string) {
+    if (!phone?.trim()) {
+      throw new BadRequestException('Phone number is required to cancel a booking.');
+    }
+    return this.bookings.cancelByGuest(id, phone);
   }
 }
 

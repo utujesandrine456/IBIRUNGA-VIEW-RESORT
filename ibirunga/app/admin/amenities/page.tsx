@@ -2,10 +2,10 @@ import { CrudResourcePage, SectionEditorPage } from "@/components/admin/CrudPage
 
 export default function AdminAmenitiesPage() {
   return (
-    <div className="space-y-10">
+    <div className="flex w-full flex-1 flex-col gap-8">
       <SectionEditorPage
-        title="Amenities Section Header"
-        description="Eyebrow, title, and intro for The Hotel section."
+        title="Hotel Section Header"
+        description="Eyebrow, title, and intro for The Hotel section on the homepage."
         sectionId="amenities-meta"
         fields={[
           { name: "eyebrow", label: "Eyebrow" },
@@ -14,8 +14,8 @@ export default function AdminAmenitiesPage() {
         ]}
       />
       <CrudResourcePage
-        title="Amenity Cards"
-        description="Add, edit, or delete hotel facility cards."
+        title="Hotel Facility Cards"
+        description="These cards appear in The Hotel section and as Services in the footer."
         resource="amenities"
         columns={[
           { key: "title", label: "Title" },

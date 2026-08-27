@@ -65,18 +65,26 @@ function StatIcon({ type }: { type: string }) {
 }
 
 function StatusBadge({ status }: { status: string }) {
+  const s = status.toLowerCase();
   const styles: Record<string, string> = {
-    pending: "bg-amber-50 text-amber-700 border-amber-200",
-    confirmed: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    cancelled: "bg-red-50 text-red-600 border-red-200",
+    pending: "bg-amber-50 text-amber-800 border-amber-200",
+    confirmed: "bg-emerald-50 text-emerald-800 border-emerald-200",
+    cancelled: "bg-slate-100 text-slate-700 border-slate-300",
+    rejected: "bg-red-50 text-red-700 border-red-200",
+  };
+  const labels: Record<string, string> = {
+    pending: "Pending",
+    confirmed: "Confirmed",
+    cancelled: "Cancelled",
+    rejected: "Rejected",
   };
   return (
     <span
       className={`rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${
-        styles[status] ?? "bg-gray-50 text-gray-600 border-gray-200"
+        styles[s] ?? "bg-gray-50 text-gray-600 border-gray-200"
       }`}
     >
-      {status}
+      {labels[s] ?? status}
     </span>
   );
 }
@@ -141,12 +149,12 @@ export default function AdminDashboardPage() {
   const quickActions = [
     { label: "Update Hero Section", href: "/admin/hero" },
     { label: "Manage Rooms", href: "/admin/rooms" },
-    { label: "Edit Amenities", href: "/admin/amenities" },
+    { label: "Edit Hotel", href: "/admin/amenities" },
     { label: "Review Bookings", href: "/admin/bookings" },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="flex w-full flex-1 flex-col gap-8">
       <div>
         <h1 className="text-3xl font-bold text-[#2a1d14]">Dashboard</h1>
         <p className="mt-2 text-sm text-[#6b6b6b]">
@@ -265,7 +273,7 @@ export default function AdminDashboardPage() {
             <h2 className="text-lg font-bold text-[#2a1d14]">Content Summary</h2>
             <div className="mt-5 space-y-3">
               {[
-                { label: "Amenities", value: counts.amenities ?? 0 },
+                { label: "Hotel", value: counts.amenities ?? 0 },
                 { label: "Testimonials", value: counts.testimonials ?? 0 },
                 { label: "Rooms", value: counts.rooms ?? 0 },
               ].map((item) => (

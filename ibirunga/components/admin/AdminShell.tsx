@@ -18,7 +18,7 @@ const contentNav: NavItem[] = [
   { href: "/admin/site", label: "Site Settings", icon: "site" },
   { href: "/admin/hero", label: "Hero", icon: "hero" },
   { href: "/admin/about", label: "About", icon: "about" },
-  { href: "/admin/amenities", label: "Amenities", icon: "amenities" },
+      { href: "/admin/amenities", label: "Hotel", icon: "amenities" },
   { href: "/admin/rooms", label: "Rooms", icon: "rooms" },
   { href: "/admin/testimonials", label: "Testimonials", icon: "testimonials" },
   { href: "/admin/blog", label: "Blog", icon: "blog" },
@@ -338,8 +338,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               aria-hidden
             />
             <div className="pointer-events-none absolute inset-0 bg-[#f3efe8]/88" aria-hidden />
-            <div className="relative z-10 flex min-h-full w-full flex-1 justify-center px-4 py-6 md:px-8 md:py-8">
-              <div className="my-auto w-full max-w-5xl">{children}</div>
+            <div className="relative z-10 flex min-h-full w-full flex-1 flex-col p-4 md:p-5">
+              {children}
             </div>
           </main>
         </div>

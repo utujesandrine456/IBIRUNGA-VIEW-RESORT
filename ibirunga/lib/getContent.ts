@@ -1,5 +1,6 @@
 import * as staticContent from './content';
 import type { CmsContent } from './cms-types';
+import { getApiBaseUrl } from './api-url';
 
 function staticFallback(): CmsContent {
   return {
@@ -121,23 +122,12 @@ function staticFallback(): CmsContent {
       sortOrder: i,
       published: true,
     })),
-    footerServices: [
-      'Restaurant & Bar',
-      'Spa & Massage',
-      'Coffee Shop',
-      'Airport Transfer',
-      'Garden Terrace',
-      'Meeting Room',
-    ],
+    footerServices: staticContent.amenities.map((a) => a.title),
   };
 }
 
 export async function getContent(): Promise<CmsContent> {
-  // API_URL works server-side (Vercel), NEXT_PUBLIC_API_URL works client-side
-  const apiUrl =
-    process.env.API_URL ??
-    process.env.NEXT_PUBLIC_API_URL ??
-    'https://ibirunga-view-resort.onrender.com/api';
+  const apiUrl = getApiBaseUrl();
 
   try {
     const res = await fetch(`${apiUrl}/content`, {

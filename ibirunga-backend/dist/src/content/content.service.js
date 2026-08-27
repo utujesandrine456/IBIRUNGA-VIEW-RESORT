@@ -27,7 +27,7 @@ let ContentService = class ContentService {
         this.prisma = prisma;
     }
     async getPublicContent() {
-        const [site, navLinks, sections, amenities, rooms, extraServices, testimonials, blogPosts, footerServices,] = await Promise.all([
+        const [site, navLinks, sections, amenities, rooms, extraServices, testimonials, blogPosts,] = await Promise.all([
             this.prisma.siteSetting.findUnique({ where: { id: 'default' } }),
             this.prisma.navLink.findMany({
                 where: { published: true },
@@ -54,7 +54,6 @@ let ContentService = class ContentService {
                 where: { published: true },
                 orderBy: { sortOrder: 'asc' },
             }),
-            this.prisma.footerService.findMany({ orderBy: { sortOrder: 'asc' } }),
         ]);
         const sectionMap = Object.fromEntries(sections.map((s) => [s.id, parseJson(s.data)]));
         return {
@@ -75,7 +74,7 @@ let ContentService = class ContentService {
             extraServices: extraServices.map(mapExtraService),
             testimonials,
             blog: blogPosts.map((b) => ({ ...b, src: b.image })),
-            footerServices: footerServices.map((s) => s.label),
+            footerServices: amenities.map((a) => a.title),
         };
     }
     async getSection(id) {

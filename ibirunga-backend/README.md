@@ -12,7 +12,7 @@ npm run db:seed
 npm run start:dev
 ```
 
-API runs at **http://localhost:3001/api**
+API runs at **http://localhost:8000/api**
 
 ## Default admin login
 
@@ -28,4 +28,4 @@ cd ibirunga
 npm run dev
 ```
 
-Set `NEXT_PUBLIC_API_URL=http://localhost:3001/api` in `.env.local`.
+Set `NEXT_PUBLIC_API_URL=http://localhost:8000/api` in `.env.local`.

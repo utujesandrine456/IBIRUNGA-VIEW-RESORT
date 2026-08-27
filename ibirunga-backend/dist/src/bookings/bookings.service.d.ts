@@ -66,7 +66,7 @@ export declare class BookingsService {
         createdAt: Date;
         updatedAt: Date;
     }>;
-    updateStatus(id: string, status: string): Prisma.Prisma__BookingClient<{
+    updateStatus(id: string, status: string): Promise<{
         id: string;
         checkIn: Date;
         checkOut: Date;
@@ -82,7 +82,18 @@ export declare class BookingsService {
         source: string;
         createdAt: Date;
         updatedAt: Date;
-    }, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    }>;
+    cancelByGuest(id: string, phone: string): Promise<{
+        id: string;
+        checkIn: Date;
+        checkOut: Date;
+        adults: number;
+        children: number;
+        roomType: string | null;
+        guestName: string;
+        status: string;
+        createdAt: Date;
+    }>;
     delete(id: string): Prisma.Prisma__BookingClient<{
         id: string;
         checkIn: Date;

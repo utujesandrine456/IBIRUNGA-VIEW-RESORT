@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { AdminCard, AdminPanel, SectionForm } from "@/components/admin/AdminUi";
 import { api } from "@/lib/api";
 import type { SiteSettings } from "@/lib/cms-types";
+import { estimateDataUrlBytes, formatBytes } from "@/lib/image-upload";
 
 export default function AdminSitePage() {
   const [values, setValues] = useState<SiteSettings>({
@@ -30,8 +31,18 @@ export default function AdminSitePage() {
   async function save() {
     setLoading(true);
     try {
+      const logo = values.logoUrl ?? "";
+      if (logo.startsWith("data:image/")) {
+        const size = estimateDataUrlBytes(logo);
+        if (size > 1.5 * 1024 * 1024) {
+          toast.error(
+            `Logo is still too large (${formatBytes(size)}). Please choose a smaller image under 2 MB.`,
+          );
+          return;
+        }
+      }
       await api.admin.updateSite(values);
-      toast.success("Site settings saved — website will update shortly");
+      toast.success("Site settings updated successfully.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Save failed");
     } finally {

@@ -1,6 +1,5 @@
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  'https://ibirunga-view-resort.onrender.com/api';
+import { getApiBaseUrl } from './api-url';
+import { phoneLookupVariants } from './phone';
 
 const TOKEN_KEY = 'ibirunga_admin_token';
 const ADMIN_KEY = 'ibirunga_admin_user';
@@ -86,8 +85,9 @@ async function request<T>(
   let res: Response;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 20000);
+  const apiUrl = getApiBaseUrl();
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(`${apiUrl}${path}`, {
       ...fetchOptions,
       headers,
       signal: controller.signal,
@@ -95,12 +95,12 @@ async function request<T>(
   } catch (err) {
     if (err instanceof DOMException && err.name === 'AbortError') {
       throw new ApiError(
-        `Request timed out contacting ${API_URL}.`,
+        `Request timed out contacting ${apiUrl}.`,
         408,
       );
     }
     throw new ApiError(
-      `Cannot reach the CMS API at ${API_URL}.`,
+      `Cannot reach the CMS API at ${apiUrl}.`,
       0,
     );
   } finally {
@@ -120,11 +120,29 @@ async function request<T>(
     throw new ApiError('Too many requests. Please wait a moment and try again.', 429);
   }
 
+  if (res.status === 413) {
+    throw new ApiError(
+      'Image is too large to save. Please use a smaller image (under 2 MB).',
+      413,
+    );
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
-    const message = Array.isArray(err.message)
+    let message = Array.isArray(err.message)
       ? err.message.join(', ')
       : err.message ?? res.statusText;
+
+    const lower = String(message).toLowerCase();
+    if (
+      lower.includes('entity too large') ||
+      lower.includes('payload too large') ||
+      lower.includes('request entity too large')
+    ) {
+      message =
+        'Image is too large to save. Please use a smaller image (under 2 MB).';
+    }
+
     throw new ApiError(message || 'Request failed', res.status);
   }
 
@@ -203,18 +221,38 @@ export const api = {
     source?: string;
   }) => request('/bookings', { method: 'POST', body: JSON.stringify(data) }),
 
-  getMyBookings: (phone: string) =>
-    request<
-      Array<{
-        id: string;
-        guestName: string;
-        checkIn: string;
-        checkOut: string;
-        roomType: string | null;
-        adults: number;
-        children: number;
-        status: string;
-        createdAt: string;
-      }>
-    >(`/bookings/my?phone=${encodeURIComponent(phone)}`),
+  getMyBookings: async (phone: string) => {
+    type MyBookingRow = {
+      id: string;
+      guestName: string;
+      checkIn: string;
+      checkOut: string;
+      roomType: string | null;
+      adults: number;
+      children: number;
+      status: string;
+      createdAt: string;
+    };
+
+    const seen = new Set<string>();
+    const merged: MyBookingRow[] = [];
+
+    for (const variant of phoneLookupVariants(phone)) {
+      const q = encodeURIComponent(variant);
+      const rows = await request<MyBookingRow[]>(`/bookings/my?phone=${q}`);
+      for (const row of rows) {
+        if (seen.has(row.id)) continue;
+        seen.add(row.id);
+        merged.push(row);
+      }
+    }
+
+    return merged;
+  },
+
+  cancelMyBooking: (id: string, phone: string) =>
+    request(`/bookings/${id}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ phone: phone.trim() }),
+    }),
 };

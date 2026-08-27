@@ -5,11 +5,11 @@ export declare class ContentService {
     getPublicContent(): Promise<{
         site: {
             id: string;
-            email: string;
             name: string;
             tagline: string;
             phone: string;
             phoneAlt: string;
+            email: string;
             address: string;
             logoUrl: string;
         } | null;
@@ -88,11 +88,11 @@ export declare class ContentService {
     }>;
     getSite(): import(".prisma/client").Prisma.Prisma__SiteSettingClient<{
         id: string;
-        email: string;
         name: string;
         tagline: string;
         phone: string;
         phoneAlt: string;
+        email: string;
         address: string;
         logoUrl: string;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs>;
@@ -106,11 +106,11 @@ export declare class ContentService {
         logoUrl: string;
     }): import(".prisma/client").Prisma.Prisma__SiteSettingClient<{
         id: string;
-        email: string;
         name: string;
         tagline: string;
         phone: string;
         phoneAlt: string;
+        email: string;
         address: string;
         logoUrl: string;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;

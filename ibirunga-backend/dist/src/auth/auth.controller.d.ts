@@ -19,8 +19,8 @@ export declare class AuthController {
         user: AuthUser;
     }): Promise<{
         role: "admin";
-        email: string;
         id: string;
+        email: string;
         name: string | null;
     }>;
 }

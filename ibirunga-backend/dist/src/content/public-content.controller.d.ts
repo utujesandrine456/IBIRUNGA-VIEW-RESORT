@@ -5,11 +5,11 @@ export declare class PublicContentController {
     getAll(): Promise<{
         site: {
             id: string;
-            email: string;
             name: string;
             tagline: string;
             phone: string;
             phoneAlt: string;
+            email: string;
             address: string;
             logoUrl: string;
         } | null;
