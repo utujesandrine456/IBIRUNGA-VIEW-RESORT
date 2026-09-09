@@ -128,14 +128,21 @@ function staticFallback(): CmsContent {
 
 export async function getContent(): Promise<CmsContent> {
   const apiUrl = getApiBaseUrl();
+  const controller = new AbortController();
+  // Keep well under Vercel limits; Render free-tier cold starts can hang otherwise.
+  const timeoutMs = 5_000;
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const res = await fetch(`${apiUrl}/content`, {
       cache: "no-store",
+      signal: controller.signal,
     });
     if (!res.ok) return staticFallback();
     return (await res.json()) as CmsContent;
   } catch {
     return staticFallback();
+  } finally {
+    clearTimeout(timeout);
   }
 }
